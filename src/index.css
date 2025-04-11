@@ -75,6 +75,7 @@
   }
   body {
     @apply bg-offwhite text-charcoal font-sans;
+    -webkit-tap-highlight-color: transparent;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
@@ -83,11 +84,11 @@
 
 @layer utilities {
   .recipe-card {
-    @apply relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    @apply relative overflow-hidden rounded-xl transition-all duration-300;
   }
   
   .ingredient-tag {
-    @apply inline-block rounded-full bg-cream px-3 py-1 text-sm text-forest m-1;
+    @apply inline-block rounded-full bg-cream px-2 py-0.5 text-sm text-forest;
   }
 
   .ingredient-missing {
@@ -96,5 +97,25 @@
   
   .bg-gradient {
     @apply bg-gradient-to-br from-terracotta to-cream bg-opacity-10;
+  }
+  
+  /* Mobile Optimized Utilities */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .app-container {
+    @apply flex flex-col min-h-screen;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  .bottom-nav-padding {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+  
+  /* Tap Animation */
+  .tap-highlight {
+    @apply transition-opacity active:opacity-70;
   }
 }
