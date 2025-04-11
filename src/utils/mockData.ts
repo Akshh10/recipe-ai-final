@@ -8,6 +8,9 @@ export interface Recipe {
   servings: string;
   ingredients: string[];
   instructions: string[];
+  matchedIngredients?: string[];
+  missingIngredients?: string[];
+  matchPercentage?: number;
 }
 
 export const mockRecipes: Recipe[] = [
