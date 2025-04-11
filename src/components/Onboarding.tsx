@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ChefHat, ArrowRight, Check } from "lucide-react";
+import { ChefHat, ArrowRight, Clock, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface OnboardingStep {
@@ -88,21 +88,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<number, string>>({});
   const [selectedPlan, setSelectedPlan] = useState<string>("Free");
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
   const handleNext = () => {
-    const step = onboardingSteps[currentStep];
-    
-    if (step.type === "questions") {
-      if (currentQuestionIndex < step.questions!.length - 1) {
-        // Move to next question within the same step
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        return;
-      }
-      // Reset question index when moving to next step
-      setCurrentQuestionIndex(0);
-    }
-    
     if (currentStep < onboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -110,26 +97,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       localStorage.setItem("selectedPlan", selectedPlan);
       localStorage.setItem("cookingPreferences", JSON.stringify(selectedOptions));
       onComplete();
-    }
-  };
-
-  const handlePrev = () => {
-    const step = onboardingSteps[currentStep];
-    
-    if (step.type === "questions" && currentQuestionIndex > 0) {
-      // Move to previous question within the same step
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-      return;
-    }
-    
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-      
-      // If moving back to questions step, set to the last question
-      const prevStep = onboardingSteps[currentStep - 1];
-      if (prevStep.type === "questions") {
-        setCurrentQuestionIndex(prevStep.questions!.length - 1);
-      }
     }
   };
 
@@ -173,7 +140,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     }
 
     if (step.type === "questions") {
-      const currentQuestion = step.questions![currentQuestionIndex];
       return (
         <>
           <div className="text-center mb-8">
@@ -186,33 +152,29 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
           </div>
 
           <div className="w-full mb-10">
-            {/* Show only the current question */}
-            <div className="mb-6 animate-fade-in">
-              <p className="font-medium mb-3 text-forest text-center">
-                {currentQuestion.question} 
-                <span className="text-sm text-gray-400 ml-2">
-                  ({currentQuestionIndex + 1}/{step.questions!.length})
-                </span>
-              </p>
-              <div className="space-y-2">
-                {currentQuestion.options.map((option) => (
-                  <button
-                    key={option}
-                    className={`w-full p-3 rounded-lg border flex items-center justify-between ${
-                      selectedOptions[currentQuestionIndex] === option 
-                        ? "border-terracotta bg-terracotta/10" 
-                        : "border-gray-200"
-                    }`}
-                    onClick={() => handleOptionSelect(currentQuestionIndex, option)}
-                  >
-                    <span>{option}</span>
-                    {selectedOptions[currentQuestionIndex] === option && (
-                      <Check className="h-4 w-4 text-terracotta" />
-                    )}
-                  </button>
-                ))}
+            {step.questions?.map((q, qIndex) => (
+              <div key={qIndex} className="mb-6">
+                <p className="font-medium mb-3 text-forest">{q.question}</p>
+                <div className="space-y-2">
+                  {q.options.map((option) => (
+                    <button
+                      key={option}
+                      className={`w-full p-3 rounded-lg border flex items-center justify-between ${
+                        selectedOptions[qIndex] === option 
+                          ? "border-terracotta bg-terracotta/10" 
+                          : "border-gray-200"
+                      }`}
+                      onClick={() => handleOptionSelect(qIndex, option)}
+                    >
+                      <span>{option}</span>
+                      {selectedOptions[qIndex] === option && (
+                        <Check className="h-4 w-4 text-terracotta" />
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </>
       );
@@ -332,49 +294,25 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
               <div
                 key={index}
                 className={`h-1 rounded-full w-10 ${
-                  index < currentStep ? "bg-terracotta" : 
-                  index === currentStep ? "bg-terracotta" : "bg-gray-200"
+                  index <= currentStep ? "bg-terracotta" : "bg-gray-200"
                 }`}
               />
             ))}
           </div>
 
-          <div className="w-full animate-fade-in">
-            {renderStepContent()}
-          </div>
+          {renderStepContent()}
 
-          <div className="w-full flex gap-3">
-            {(currentStep > 0 || (onboardingSteps[currentStep].type === "questions" && currentQuestionIndex > 0)) && (
-              <Button
-                onClick={handlePrev}
-                variant="outline"
-                className="flex-1"
-                size="lg"
-              >
-                Back
-              </Button>
+          <Button
+            onClick={handleNext}
+            className="w-full bg-terracotta hover:bg-terracotta/90 text-white py-6"
+            size="lg"
+          >
+            {currentStep < onboardingSteps.length - 1 ? (
+              <>Continue <ArrowRight className="ml-2 h-5 w-5" /></>
+            ) : (
+              "Get Started"
             )}
-            
-            <Button
-              onClick={handleNext}
-              className={`bg-terracotta hover:bg-terracotta/90 text-white py-6 ${
-                currentStep === 0 || (onboardingSteps[currentStep].type === "questions" && currentQuestionIndex === 0 && !currentStep) 
-                ? "w-full" : "flex-1"
-              }`}
-              size="lg"
-            >
-              {currentStep < onboardingSteps.length - 1 ? (
-                onboardingSteps[currentStep].type === "questions" && 
-                currentQuestionIndex < onboardingSteps[currentStep].questions!.length - 1 ? (
-                  <>Next Question <ArrowRight className="ml-2 h-5 w-5" /></>
-                ) : (
-                  <>Continue <ArrowRight className="ml-2 h-5 w-5" /></>
-                )
-              ) : (
-                "Get Started"
-              )}
-            </Button>
-          </div>
+          </Button>
         </div>
       </div>
     </div>
