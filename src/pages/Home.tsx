@@ -9,7 +9,6 @@ import RecipeDetailModal from "@/components/RecipeDetailModal";
 import WaitlistModal from "@/components/WaitlistModal";
 import { findRecipesByIngredients, Recipe } from "@/utils/mockData";
 import { NavigationMenu, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
 
 const Home = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);

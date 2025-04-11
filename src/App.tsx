@@ -21,7 +21,7 @@ const MobileNav = () => {
   const navigate = useNavigate();
   
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-10">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-10 safe-bottom">
       <ul className="flex justify-around py-3">
         <li>
           <button 

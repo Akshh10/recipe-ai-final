@@ -1,14 +1,17 @@
 
 import React, { useState } from "react";
-import { ChefHat, ArrowRight, Camera, Search, Heart } from "lucide-react";
+import { ChefHat, ArrowRight, Clock, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface OnboardingStep {
   title: string;
   description: string;
   image?: string;
-  type: "info" | "question" | "plan";
-  options?: string[];
+  type: "info" | "questions" | "howItWorks" | "ready";
+  questions?: {
+    question: string;
+    options: string[];
+  }[];
   plans?: {
     name: string;
     price: string;
@@ -20,26 +23,39 @@ interface OnboardingStep {
 
 const onboardingSteps: OnboardingStep[] = [
   {
-    title: "Welcome to Recipe AI",
-    description: "Discover delicious recipes based on ingredients you already have at home.",
+    title: "Welcome to Recipe AI!",
+    description: "Find amazing Indian meals hiding in your own kitchen. Cook more, waste less.",
     image: "/placeholder.svg",
     type: "info"
   },
   {
-    title: "Scan or Add Ingredients",
-    description: "Quickly scan your ingredients with your camera or add them manually to find matching recipes.",
-    type: "info"
+    title: "Tell Us a Little About Your Cooking? (Optional)",
+    description: "This helps us suggest recipes you might love!",
+    type: "questions",
+    questions: [
+      {
+        question: "How much time do you usually have for cooking?",
+        options: ["Quick (Under 30 mins)", "Moderate (30-60 mins)", "Leisurely (60+ mins)"]
+      },
+      {
+        question: "What's your go-to meal style?",
+        options: ["Veg Comfort Food", "Quick Non-Veg", "Healthy & Light", "Explore New Things"]
+      },
+      {
+        question: "What's your main goal with Recipe AI?",
+        options: ["Use Up Ingredients", "Find Quick Meals", "Try New Recipes", "Eat Healthier"]
+      }
+    ]
   },
   {
-    title: "What do you cook most often?",
-    description: "This helps us personalize your recipe suggestions.",
-    type: "question",
-    options: ["Indian cuisine", "Continental", "Asian", "Mediterranean", "Other"]
+    title: "List Your Ingredients, Find Your Meal!",
+    description: "Just type what's in your kitchen, and we'll instantly show you the delicious Indian dishes you can create.",
+    type: "howItWorks"
   },
   {
-    title: "Choose Your Plan",
-    description: "Start with our free plan or upgrade for premium features",
-    type: "plan",
+    title: "Your Next Meal Awaits!",
+    description: "Let's turn those ingredients into something amazing. Sign up or log in to save preferences and recipes (optional).",
+    type: "ready",
     plans: [
       {
         name: "Free",
@@ -70,7 +86,7 @@ interface OnboardingProps {
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [selectedOptions, setSelectedOptions] = useState<Record<number, string>>({});
   const [selectedPlan, setSelectedPlan] = useState<string>("Free");
 
   const handleNext = () => {
@@ -78,10 +94,17 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       setCurrentStep(currentStep + 1);
     } else {
       // In a real app, we would save the selection and plan
-      localStorage.setItem("selectedCuisine", selectedOption);
       localStorage.setItem("selectedPlan", selectedPlan);
+      localStorage.setItem("cookingPreferences", JSON.stringify(selectedOptions));
       onComplete();
     }
+  };
+
+  const handleOptionSelect = (questionIndex: number, option: string) => {
+    setSelectedOptions(prev => ({
+      ...prev,
+      [questionIndex]: option
+    }));
   };
 
   const renderStepContent = () => {
@@ -91,11 +114,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       return (
         <>
           <div className="mb-8 bg-cream/50 p-6 rounded-full">
-            {currentStep === 0 ? (
-              <ChefHat className="h-12 w-12 text-terracotta" />
-            ) : (
-              <Camera className="h-12 w-12 text-terracotta" />
-            )}
+            <ChefHat className="h-12 w-12 text-terracotta" />
           </div>
 
           <div className="text-center mb-8">
@@ -120,13 +139,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       );
     }
 
-    if (step.type === "question") {
+    if (step.type === "questions") {
       return (
         <>
-          <div className="mb-8 bg-cream/50 p-6 rounded-full">
-            <Search className="h-12 w-12 text-terracotta" />
-          </div>
-
           <div className="text-center mb-8">
             <h2 className="text-2xl font-heading font-bold text-forest mb-4">
               {step.title}
@@ -136,29 +151,82 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             </p>
           </div>
 
-          <div className="w-full mb-12">
-            {step.options?.map((option) => (
-              <button
-                key={option}
-                className={`w-full p-4 mb-3 rounded-lg border text-left ${
-                  selectedOption === option 
-                    ? "border-terracotta bg-terracotta/10" 
-                    : "border-gray-200"
-                }`}
-                onClick={() => setSelectedOption(option)}
-              >
-                {option}
-              </button>
+          <div className="w-full mb-10">
+            {step.questions?.map((q, qIndex) => (
+              <div key={qIndex} className="mb-6">
+                <p className="font-medium mb-3 text-forest">{q.question}</p>
+                <div className="space-y-2">
+                  {q.options.map((option) => (
+                    <button
+                      key={option}
+                      className={`w-full p-3 rounded-lg border flex items-center justify-between ${
+                        selectedOptions[qIndex] === option 
+                          ? "border-terracotta bg-terracotta/10" 
+                          : "border-gray-200"
+                      }`}
+                      onClick={() => handleOptionSelect(qIndex, option)}
+                    >
+                      <span>{option}</span>
+                      {selectedOptions[qIndex] === option && (
+                        <Check className="h-4 w-4 text-terracotta" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </>
       );
     }
 
-    if (step.type === "plan") {
+    if (step.type === "howItWorks") {
       return (
         <>
           <div className="text-center mb-8">
+            <h2 className="text-2xl font-heading font-bold text-forest mb-4">
+              {step.title}
+            </h2>
+            <p className="text-forest/80 mb-6">
+              {step.description}
+            </p>
+          </div>
+
+          <div className="w-full h-56 bg-cream/30 rounded-lg mb-12 p-4">
+            <div className="animate-pulse flex flex-col items-center">
+              <div className="flex gap-2 mb-6">
+                <span className="bg-terracotta/80 text-white px-3 py-1 rounded-full text-sm">Paneer</span>
+                <span className="bg-terracotta/80 text-white px-3 py-1 rounded-full text-sm">Onion</span>
+                <span className="bg-terracotta/80 text-white px-3 py-1 rounded-full text-sm">Capsicum</span>
+              </div>
+              
+              <div className="w-full max-w-xs bg-white p-3 rounded-lg shadow-sm mb-3 flex">
+                <div className="w-16 h-16 bg-gray-200 rounded"></div>
+                <div className="ml-3">
+                  <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 w-24 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 w-20 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+
+              <div className="w-full max-w-xs bg-white p-3 rounded-lg shadow-sm flex">
+                <div className="w-16 h-16 bg-gray-200 rounded"></div>
+                <div className="ml-3">
+                  <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 w-24 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 w-20 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    if (step.type === "ready") {
+      return (
+        <>
+          <div className="text-center mb-6">
             <h2 className="text-2xl font-heading font-bold text-forest mb-4">
               {step.title}
             </h2>
@@ -167,7 +235,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             </p>
           </div>
 
-          <div className="w-full mb-10">
+          <div className="w-full mb-6">
             {step.plans?.map((plan) => (
               <div 
                 key={plan.name}
@@ -225,7 +293,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             {onboardingSteps.map((_, index) => (
               <div
                 key={index}
-                className={`h-1 rounded-full w-16 ${
+                className={`h-1 rounded-full w-10 ${
                   index <= currentStep ? "bg-terracotta" : "bg-gray-200"
                 }`}
               />
