@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ChefHat, ArrowRight, Check } from "lucide-react";
+import { ChefHat, ArrowRight, ArrowLeft, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface OnboardingStep {
@@ -186,8 +186,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
           </div>
 
           <div className="w-full mb-10">
-            {/* Show only the current question */}
-            <div className="mb-6 animate-fade-in">
+            {/* Show only the current question with horizontal slide animation */}
+            <div className="mb-6 animate-fade-in transition-all duration-300 ease-in-out">
               <p className="font-medium mb-3 text-forest text-center">
                 {currentQuestion.question} 
                 <span className="text-sm text-gray-400 ml-2">
@@ -351,7 +351,13 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                 className="flex-1"
                 size="lg"
               >
-                Back
+                {onboardingSteps[currentStep].type === "questions" && currentQuestionIndex > 0 ? (
+                  <>
+                    <ArrowLeft className="mr-2 h-5 w-5" /> Previous Question
+                  </>
+                ) : (
+                  "Back"
+                )}
               </Button>
             )}
             

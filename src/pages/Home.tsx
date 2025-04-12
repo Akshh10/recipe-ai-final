@@ -88,9 +88,9 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col pb-16">
+    <div className="min-h-screen flex flex-col pb-16 pt-0">
       {/* Hero Section */}
-      <section className="flex-grow flex flex-col justify-center items-center text-center px-4 pt-6 pb-12 max-w-md mx-auto">
+      <section className="flex-grow flex flex-col justify-center items-center text-center px-4 pt-4 pb-12 max-w-md mx-auto">
         <h1 className="text-3xl font-heading font-bold text-forest mb-4">
           Turn Ingredients into <span className="text-terracotta">Meals</span>
         </h1>
