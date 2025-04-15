@@ -1,14 +1,10 @@
-
 import React, { useState } from "react";
-import { Camera, Search, Scan, Upload, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import IngredientInput from "@/components/IngredientInput";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeDetailModal from "@/components/RecipeDetailModal";
-import WaitlistModal from "@/components/WaitlistModal";
 import { findRecipesByIngredients, Recipe } from "@/utils/mockData";
-import { NavigationMenu, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 
 const Home = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -88,124 +84,60 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col pb-16">
+    <div className="min-h-screen flex flex-col pb-24">
       {/* Hero Section */}
-      <section className="flex-grow flex flex-col justify-center items-center text-center px-4 pt-6 pb-12 max-w-md mx-auto">
-        <h1 className="text-3xl font-heading font-bold text-forest mb-4">
-          Turn Ingredients into <span className="text-terracotta">Meals</span>
-        </h1>
-        
-        <div className="w-full mx-auto mb-6">
-          <NavigationMenu className="w-full">
-            <NavigationMenuList className="w-full border-b border-gray-200 flex justify-center">
-              <div className="w-1/2 text-center">
-                <NavigationMenuLink 
-                  className={`block px-4 py-3 ${activeTab === 'scan' ? 'text-terracotta border-b-2 border-terracotta' : 'text-forest/70'}`}
-                  onClick={() => setActiveTab('scan')}
-                >
-                  Scan
-                </NavigationMenuLink>
-              </div>
-              <div className="w-1/2 text-center">
-                <NavigationMenuLink 
-                  className={`block px-4 py-3 ${activeTab === 'manual' ? 'text-terracotta border-b-2 border-terracotta' : 'text-forest/70'}`}
-                  onClick={() => setActiveTab('manual')}
-                >
-                  Manual
-                </NavigationMenuLink>
-              </div>
-            </NavigationMenuList>
-          </NavigationMenu>
-          
-          <div className="mt-8">
-            {activeTab === 'scan' ? (
-              <div className="flex flex-col items-center">
-                <div className="w-64 h-64 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center mb-6">
-                  <Camera className="h-16 w-16 text-gray-300" />
-                </div>
-                <Button 
-                  onClick={handleOpenCamera}
-                  className="bg-terracotta hover:bg-terracotta/90 text-white px-8 py-6 text-lg w-full"
-                >
-                  <Scan className="mr-2 h-5 w-5" />
-                  Scan Ingredients
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="mt-3 border-gray-300 text-forest/70 py-5 w-full"
-                >
-                  <Upload className="mr-2 h-5 w-5" />
-                  Upload Photo
-                </Button>
-              </div>
-            ) : (
-              <div>
-                <IngredientInput onIngredientsChange={setIngredients} />
-                <Button 
-                  onClick={handleSearch}
-                  className="bg-terracotta hover:bg-terracotta/90 text-white px-8 py-6 text-lg w-full mt-6"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Finding recipes...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <Search className="h-5 w-5" />
-                      <span>Find Recipes</span>
-                    </div>
-                  )}
-                </Button>
-              </div>
-            )}
+      <section className="relative w-full h-48 bg-gray-100 overflow-hidden">
+        <img
+          src="/lovable-uploads/1d0f4556-4723-4ad6-9552-81509a5717ed.png"
+          alt="Hero background"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent">
+          <div className="p-6 text-white">
+            <h2 className="text-2xl font-semibold">Good afternoon!</h2>
           </div>
         </div>
+      </section>
 
-        {!hasSearched && (
-          <button 
-            onClick={scrollToRecipes} 
-            className="flex items-center gap-2 text-forest/70 hover:text-terracotta transition-colors mt-4 animate-pulse"
-          >
-            <span>Popular Recipes</span>
-            <ArrowDown className="h-4 w-4" />
-          </button>
-        )}
+      {/* Main Content */}
+      <section className="px-4 py-6">
+        <h2 className="text-xl font-semibold mb-4">Find recipes</h2>
+        <IngredientInput onIngredientsChange={setIngredients} />
+        <Button 
+          onClick={handleSearch}
+          className="w-full mt-4 bg-[#0FA0CE] hover:bg-[#0FA0CE]/90"
+          disabled={loading}
+        >
+          {loading ? 'Searching...' : 'Search Recipes'}
+        </Button>
       </section>
 
       {/* Recipes Section */}
-      <section id="recipes" className="bg-cream/30 px-4 py-10">
-        <div className="max-w-md mx-auto">
-          <h2 className="font-heading text-2xl text-forest mb-2">{hasSearched ? 'Recipes for You' : 'Popular Recipes'}</h2>
-          <p className="text-forest/70 mb-6">
-            {hasSearched 
-              ? `Found ${recipes.length} recipes based on your ingredients` 
-              : 'Explore our collection of authentic dishes'}
-          </p>
-
-          <div className="grid grid-cols-1 gap-6">
-            {(hasSearched ? recipes : findRecipesByIngredients(['paneer', 'rice', 'potato']).slice(0, 4)).map((recipe) => (
-              <RecipeCard
-                key={recipe.id}
-                id={recipe.id}
-                title={recipe.title}
-                image={recipe.image}
-                matchedIngredients={recipe.matchedIngredients || []}
-                missingIngredients={recipe.missingIngredients || []}
-                cookTime={recipe.cookTime}
-                onClick={() => handleRecipeClick(
-                  recipe, 
-                  recipe.matchedIngredients || [], 
-                  recipe.missingIngredients || []
-                )}
-              />
-            ))}
-          </div>
+      <section className="px-4 py-6 bg-gray-50">
+        <h2 className="text-xl font-semibold mb-4">
+          {hasSearched ? 'Found Recipes' : 'Popular Recipes'}
+        </h2>
+        <div className="grid gap-4">
+          {(hasSearched ? recipes : findRecipesByIngredients(['paneer', 'rice', 'potato']).slice(0, 4)).map((recipe) => (
+            <RecipeCard
+              key={recipe.id}
+              id={recipe.id}
+              title={recipe.title}
+              image={recipe.image}
+              matchedIngredients={recipe.matchedIngredients || []}
+              missingIngredients={recipe.missingIngredients || []}
+              cookTime={recipe.cookTime}
+              onClick={() => handleRecipeClick(
+                recipe, 
+                recipe.matchedIngredients || [], 
+                recipe.missingIngredients || []
+              )}
+            />
+          ))}
         </div>
       </section>
 
-      {/* Modals */}
+      {/* Modal */}
       {selectedRecipe && (
         <RecipeDetailModal
           id={selectedRecipe.id}
@@ -221,11 +153,6 @@ const Home = () => {
           onClose={() => setSelectedRecipe(null)}
         />
       )}
-
-      <WaitlistModal
-        isOpen={waitlistModalOpen}
-        onClose={() => setWaitlistModalOpen(false)}
-      />
     </div>
   );
 };

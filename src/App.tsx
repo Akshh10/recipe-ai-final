@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -10,8 +9,9 @@ import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./components/Onboarding";
+import Header from "./components/Header";
 import { LikedRecipesProvider } from "./components/LikedRecipesContext";
-import { Home as HomeIcon, Heart, User } from "lucide-react";
+import { Home as HomeIcon, Search, Scan, Clock, User } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -21,33 +21,49 @@ const MobileNav = () => {
   const navigate = useNavigate();
   
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-10 safe-bottom">
-      <ul className="flex justify-around py-3">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#1A1F2C] shadow-lg z-10 safe-bottom">
+      <ul className="flex justify-around items-center py-4 px-6">
         <li>
           <button 
-            className={`flex flex-col items-center text-xs ${location.pathname === '/' ? 'text-terracotta' : 'text-forest'}`}
+            className={`flex flex-col items-center ${location.pathname === '/' ? 'text-[#0FA0CE]' : 'text-white'}`}
             onClick={() => navigate('/')}
           >
-            <HomeIcon className={`h-6 w-6 mb-1 ${location.pathname === '/' ? 'text-terracotta' : 'text-forest'}`} />
-            <span>Home</span>
+            <HomeIcon className="h-6 w-6 mb-1" />
+            <span className="text-xs">Home</span>
           </button>
         </li>
         <li>
           <button 
-            className={`flex flex-col items-center text-xs ${location.pathname === '/favorites' ? 'text-terracotta' : 'text-forest'}`}
-            onClick={() => navigate('/favorites')}
+            className={`flex flex-col items-center ${location.pathname === '/search' ? 'text-[#0FA0CE]' : 'text-white'}`}
+            onClick={() => navigate('/search')}
           >
-            <Heart className={`h-6 w-6 mb-1 ${location.pathname === '/favorites' ? 'text-terracotta' : 'text-forest'}`} />
-            <span>Favorites</span>
+            <Search className="h-6 w-6 mb-1" />
+            <span className="text-xs">Search</span>
           </button>
         </li>
         <li>
           <button 
-            className={`flex flex-col items-center text-xs ${location.pathname === '/profile' ? 'text-terracotta' : 'text-forest'}`}
+            className="flex flex-col items-center justify-center bg-[#0FA0CE] text-white rounded-full p-4 -mt-8 shadow-lg"
+          >
+            <Scan className="h-8 w-8" />
+          </button>
+        </li>
+        <li>
+          <button 
+            className={`flex flex-col items-center ${location.pathname === '/history' ? 'text-[#0FA0CE]' : 'text-white'}`}
+            onClick={() => navigate('/history')}
+          >
+            <Clock className="h-6 w-6 mb-1" />
+            <span className="text-xs">History</span>
+          </button>
+        </li>
+        <li>
+          <button 
+            className={`flex flex-col items-center ${location.pathname === '/profile' ? 'text-[#0FA0CE]' : 'text-white'}`}
             onClick={() => navigate('/profile')}
           >
-            <User className={`h-6 w-6 mb-1 ${location.pathname === '/profile' ? 'text-terracotta' : 'text-forest'}`} />
-            <span>Profile</span>
+            <User className="h-6 w-6 mb-1" />
+            <span className="text-xs">Profile</span>
           </button>
         </li>
       </ul>
@@ -58,6 +74,7 @@ const MobileNav = () => {
 const AppRoutes = () => {
   return (
     <>
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites />} />
