@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 import Onboarding from "./components/Onboarding";
 import Header from "./components/Header";
 import { LikedRecipesProvider } from "./components/LikedRecipesContext";
-import { Home as HomeIcon, Search, Scan, Clock, User } from "lucide-react";
+import { Home as HomeIcon, Scan, BookOpen, User } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -21,49 +21,31 @@ const MobileNav = () => {
   const navigate = useNavigate();
   
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#1A1F2C] shadow-lg z-10 safe-bottom">
-      <ul className="flex justify-around items-center py-4 px-6">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-lg z-10 safe-bottom border-t border-gray-100">
+      <ul className="flex justify-around items-center py-3 px-6">
         <li>
           <button 
-            className={`flex flex-col items-center ${location.pathname === '/' ? 'text-[#0FA0CE]' : 'text-white'}`}
+            className={`flex flex-col items-center ${location.pathname === '/' ? 'text-terracotta' : 'text-forest'}`}
             onClick={() => navigate('/')}
           >
             <HomeIcon className="h-6 w-6 mb-1" />
-            <span className="text-xs">Home</span>
+            <span className="text-xs font-medium">Home</span>
+          </button>
+        </li>
+        <li className="relative">
+          <button 
+            className="flex flex-col items-center justify-center bg-terracotta text-white rounded-full p-4 -mt-8 shadow-lg"
+          >
+            <Scan className="h-7 w-7" />
           </button>
         </li>
         <li>
           <button 
-            className={`flex flex-col items-center ${location.pathname === '/search' ? 'text-[#0FA0CE]' : 'text-white'}`}
-            onClick={() => navigate('/search')}
+            className={`flex flex-col items-center ${location.pathname === '/favorites' ? 'text-terracotta' : 'text-forest'}`}
+            onClick={() => navigate('/favorites')}
           >
-            <Search className="h-6 w-6 mb-1" />
-            <span className="text-xs">Search</span>
-          </button>
-        </li>
-        <li>
-          <button 
-            className="flex flex-col items-center justify-center bg-[#0FA0CE] text-white rounded-full p-4 -mt-8 shadow-lg"
-          >
-            <Scan className="h-8 w-8" />
-          </button>
-        </li>
-        <li>
-          <button 
-            className={`flex flex-col items-center ${location.pathname === '/history' ? 'text-[#0FA0CE]' : 'text-white'}`}
-            onClick={() => navigate('/history')}
-          >
-            <Clock className="h-6 w-6 mb-1" />
-            <span className="text-xs">History</span>
-          </button>
-        </li>
-        <li>
-          <button 
-            className={`flex flex-col items-center ${location.pathname === '/profile' ? 'text-[#0FA0CE]' : 'text-white'}`}
-            onClick={() => navigate('/profile')}
-          >
-            <User className="h-6 w-6 mb-1" />
-            <span className="text-xs">Profile</span>
+            <BookOpen className="h-6 w-6 mb-1" />
+            <span className="text-xs font-medium">Recipes</span>
           </button>
         </li>
       </ul>
