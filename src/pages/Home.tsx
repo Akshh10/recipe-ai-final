@@ -6,7 +6,7 @@ import IngredientInput from "@/components/IngredientInput";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeDetailModal from "@/components/RecipeDetailModal";
 import { findRecipesByIngredients, Recipe } from "@/utils/mockData";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Scan } from "lucide-react";
 
 const Home = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -63,22 +63,38 @@ const Home = () => {
   return (
     <div className="min-h-screen flex flex-col pb-24">
       {/* Hero Section */}
-      <section className="relative w-full h-48 bg-gray-100 overflow-hidden">
-        <img
-          src="/lovable-uploads/1d0f4556-4723-4ad6-9552-81509a5717ed.png"
-          alt="Hero background"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent">
-          <div className="p-6 text-white">
-            <h2 className="text-2xl font-semibold font-heading">{getGreeting()}</h2>
-            <p className="text-sm mt-1 opacity-90">What would you like to cook today?</p>
-          </div>
+      <section className="px-6 py-8 bg-[#FEF7CD]/30">
+        <div className="space-y-6">
+          <h2 className="text-3xl font-bold font-heading">{getGreeting()}</h2>
+          <p className="text-forest/80">What would you like to cook today?</p>
         </div>
       </section>
 
-      {/* Main Content */}
-      <section className="px-4 py-6 bg-[#FEF7CD]/30">
+      {/* Scanner Section */}
+      <section className="px-4 py-6 bg-white">
+        <div className="flex flex-col items-center justify-center bg-[#FEF7CD]/30 rounded-xl p-6 space-y-4">
+          <Scan className="h-8 w-8 text-terracotta" />
+          <h3 className="font-heading font-semibold text-lg">Scan Ingredients</h3>
+          <p className="text-sm text-center text-forest/80">
+            Scan your ingredients to find matching recipes
+          </p>
+          <Button 
+            variant="outline"
+            className="bg-white hover:bg-white/90"
+            onClick={() => {
+              toast({
+                title: "Scanner",
+                description: "Scanner feature coming soon!",
+              });
+            }}
+          >
+            Open Scanner
+          </Button>
+        </div>
+      </section>
+
+      {/* Manual Input Section */}
+      <section className="px-4 py-6 bg-white">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-heading font-semibold">Find recipes</h2>
           <Button 
