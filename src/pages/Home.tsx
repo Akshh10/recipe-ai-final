@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -5,6 +6,7 @@ import IngredientInput from "@/components/IngredientInput";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeDetailModal from "@/components/RecipeDetailModal";
 import { findRecipesByIngredients, Recipe } from "@/utils/mockData";
+import { Sparkles } from "lucide-react";
 
 const Home = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -15,36 +17,8 @@ const Home = () => {
   const [matchedIngredients, setMatchedIngredients] = useState<string[]>([]);
   const [missingIngredients, setMissingIngredients] = useState<string[]>([]);
   const [waitlistModalOpen, setWaitlistModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'scan' | 'manual'>('scan');
   
   const { toast } = useToast();
-
-  const handleOpenCamera = () => {
-    toast({
-      title: "Camera Mode",
-      description: "This is a mock implementation. In a real app, this would open the camera.",
-    });
-    
-    // Mock data after "scanning"
-    setTimeout(() => {
-      setLoading(true);
-      // Simulate API call with scanned ingredients
-      setTimeout(() => {
-        const scannedIngredients = ['tomato', 'onion', 'paneer', 'ginger'];
-        setIngredients(scannedIngredients);
-        
-        const results = findRecipesByIngredients(scannedIngredients);
-        setRecipes(results);
-        setHasSearched(true);
-        setLoading(false);
-        
-        toast({
-          title: "Scan complete",
-          description: `Found ${scannedIngredients.length} ingredients`,
-        });
-      }, 2000);
-    }, 1000);
-  };
 
   const handleSearch = () => {
     if (ingredients.length === 0) {
@@ -79,8 +53,11 @@ const Home = () => {
     setMissingIngredients(missing);
   };
 
-  const scrollToRecipes = () => {
-    document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning!";
+    if (hour < 18) return "Good afternoon!";
+    return "Good evening!";
   };
 
   return (
@@ -94,18 +71,32 @@ const Home = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent">
           <div className="p-6 text-white">
-            <h2 className="text-2xl font-semibold">Good afternoon!</h2>
+            <h2 className="text-2xl font-semibold font-heading">{getGreeting()}</h2>
+            <p className="text-sm mt-1 opacity-90">What would you like to cook today?</p>
           </div>
         </div>
       </section>
 
       {/* Main Content */}
-      <section className="px-4 py-6">
-        <h2 className="text-xl font-semibold mb-4">Find recipes</h2>
+      <section className="px-4 py-6 bg-[#FEF7CD]/30">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-heading font-semibold">Find recipes</h2>
+          <Button 
+            variant="ghost" 
+            className="p-0 h-auto text-sm text-terracotta flex items-center gap-1"
+            onClick={() => toast({
+              title: "AI Suggestion",
+              description: "Try adding 'chicken' and 'pasta' for quick dinner ideas!",
+            })}
+          >
+            <Sparkles className="h-3 w-3" />
+            <span>Suggestions</span>
+          </Button>
+        </div>
         <IngredientInput onIngredientsChange={setIngredients} />
         <Button 
           onClick={handleSearch}
-          className="w-full mt-4 bg-[#0FA0CE] hover:bg-[#0FA0CE]/90"
+          className="w-full mt-4 bg-terracotta hover:bg-terracotta/90 text-white font-medium"
           disabled={loading}
         >
           {loading ? 'Searching...' : 'Search Recipes'}
@@ -113,8 +104,8 @@ const Home = () => {
       </section>
 
       {/* Recipes Section */}
-      <section className="px-4 py-6 bg-gray-50">
-        <h2 className="text-xl font-semibold mb-4">
+      <section className="px-4 py-6 bg-white">
+        <h2 className="text-xl font-semibold font-heading mb-4">
           {hasSearched ? 'Found Recipes' : 'Popular Recipes'}
         </h2>
         <div className="grid gap-4">

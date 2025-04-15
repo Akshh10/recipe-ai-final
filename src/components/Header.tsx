@@ -9,10 +9,10 @@ const Header = () => {
   return (
     <header className="bg-white py-4 px-4 shadow-sm">
       <div className="flex justify-between items-center max-w-screen-xl mx-auto">
-        <div className="text-forest font-heading font-bold text-lg">Recipe AI</div>
+        <div className="text-forest font-heading font-bold text-xl">Recipe AI</div>
         <div className="flex items-center space-x-3">
-          <div className="relative flex items-center bg-gray-50 rounded-full px-4 py-2 w-44">
-            <Search className="h-5 w-5 text-gray-400 mr-2" />
+          <div className="relative flex items-center bg-gray-50 rounded-full px-3 py-1.5 w-36 border border-gray-100">
+            <Search className="h-4 w-4 text-gray-400 mr-2" />
             <input
               type="text"
               placeholder="Search..."
@@ -21,7 +21,7 @@ const Header = () => {
           </div>
           <button 
             onClick={() => navigate('/profile')}
-            className="bg-cream rounded-full p-2 flex items-center justify-center"
+            className="bg-cream rounded-full p-2 flex items-center justify-center shadow-sm hover:bg-cream/80 transition-colors"
           >
             <User className="h-5 w-5 text-forest" />
           </button>

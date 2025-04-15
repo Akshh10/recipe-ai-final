@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -11,7 +12,7 @@ import NotFound from "./pages/NotFound";
 import Onboarding from "./components/Onboarding";
 import Header from "./components/Header";
 import { LikedRecipesProvider } from "./components/LikedRecipesContext";
-import { Home as HomeIcon, Scan, BookOpen, User } from "lucide-react";
+import { Home as HomeIcon, Scan, BookOpen } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -21,22 +22,22 @@ const MobileNav = () => {
   const navigate = useNavigate();
   
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-lg z-10 safe-bottom border-t border-gray-100">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#FEF7CD] shadow-sm z-10 safe-bottom border-t border-[#F1F0FB]">
       <ul className="flex justify-around items-center py-3 px-6">
         <li>
           <button 
             className={`flex flex-col items-center ${location.pathname === '/' ? 'text-terracotta' : 'text-forest'}`}
             onClick={() => navigate('/')}
           >
-            <HomeIcon className="h-6 w-6 mb-1" />
+            <HomeIcon className="h-5 w-5 mb-1" />
             <span className="text-xs font-medium">Home</span>
           </button>
         </li>
         <li className="relative">
           <button 
-            className="flex flex-col items-center justify-center bg-terracotta text-white rounded-full p-4 -mt-8 shadow-lg"
+            className="flex flex-col items-center justify-center bg-terracotta text-white rounded-full p-4 -mt-8 shadow-md hover:bg-terracotta/90 transition-colors"
           >
-            <Scan className="h-7 w-7" />
+            <Scan className="h-6 w-6" />
           </button>
         </li>
         <li>
@@ -44,7 +45,7 @@ const MobileNav = () => {
             className={`flex flex-col items-center ${location.pathname === '/favorites' ? 'text-terracotta' : 'text-forest'}`}
             onClick={() => navigate('/favorites')}
           >
-            <BookOpen className="h-6 w-6 mb-1" />
+            <BookOpen className="h-5 w-5 mb-1" />
             <span className="text-xs font-medium">Recipes</span>
           </button>
         </li>
