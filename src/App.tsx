@@ -10,7 +10,6 @@ import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./components/Onboarding";
-import Header from "./components/Header";
 import { LikedRecipesProvider } from "./components/LikedRecipesContext";
 import { Home as HomeIcon, Heart, User } from "lucide-react";
 
@@ -59,7 +58,6 @@ const MobileNav = () => {
 const AppRoutes = () => {
   return (
     <>
-      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites />} />
