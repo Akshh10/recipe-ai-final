@@ -72,6 +72,10 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/settings" element={React.lazy(() => import('./pages/profile/Settings'))} />
+        <Route path="/profile/subscription" element={React.lazy(() => import('./pages/profile/Subscription'))} />
+        <Route path="/profile/saved-recipes" element={React.lazy(() => import('./pages/profile/SavedRecipes'))} />
+        <Route path="/profile/support" element={React.lazy(() => import('./pages/profile/Support'))} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <MobileNav />

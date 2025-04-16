@@ -3,8 +3,11 @@ import React from "react";
 import { User, Settings, CreditCard, BookOpen, Info, LogOut, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
+  
   // In a real app, this would come from an auth context
   const user = {
     name: "Guest User",
@@ -17,22 +20,22 @@ const Profile = () => {
     {
       icon: Settings,
       label: "Account Settings",
-      link: "#"
+      link: "/profile/settings"
     },
     {
       icon: CreditCard,
       label: "Subscription & Billing",
-      link: "#"
+      link: "/profile/subscription"
     },
     {
       icon: BookOpen,
       label: "Saved Recipes",
-      link: "#"
+      link: "/profile/saved-recipes"
     },
     {
       icon: Info,
       label: "Help & Support",
-      link: "#"
+      link: "/profile/support"
     }
   ];
   
@@ -73,13 +76,16 @@ const Profile = () => {
           <div className="bg-white rounded-lg shadow mb-6">
             {menuItems.map((item, index) => (
               <React.Fragment key={item.label}>
-                <a href={item.link} className="flex items-center justify-between p-4">
+                <button 
+                  onClick={() => navigate(item.link)}
+                  className="w-full flex items-center justify-between p-4"
+                >
                   <div className="flex items-center">
                     <item.icon className="h-5 w-5 text-terracotta mr-3" />
                     <span>{item.label}</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-forest/50" />
-                </a>
+                </button>
                 {index < menuItems.length - 1 && <Separator />}
               </React.Fragment>
             ))}
