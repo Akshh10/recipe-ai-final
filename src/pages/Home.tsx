@@ -62,8 +62,8 @@ const Home = () => {
   return (
     <div className="min-h-screen flex flex-col pb-24">
       {/* Hero Section */}
-      <section className="px-6 py-8 bg-[#FEF7CD]/30 mb-6">
-        <div className="max-w-lg space-y-4">
+      <section className="px-6 py-8 bg-gradient-to-br from-cream/30 via-soft-purple/20 to-soft-yellow/30 mb-6">
+        <div className="max-w-lg mx-auto space-y-4 text-center">
           <div className="space-y-2">
             <h2 className="text-4xl font-bold font-heading text-forest">
               {getGreeting()}
@@ -72,10 +72,6 @@ const Home = () => {
               What would you like to cook today?
             </p>
           </div>
-          <p className="text-forest/80">
-            Discover delicious recipes with ingredients you already have at home.
-            Start by adding your ingredients below!
-          </p>
         </div>
       </section>
 
