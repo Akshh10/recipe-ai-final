@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -6,7 +5,7 @@ import IngredientInput from "@/components/IngredientInput";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeDetailModal from "@/components/RecipeDetailModal";
 import { findRecipesByIngredients, Recipe } from "@/utils/mockData";
-import { Sparkles, Scan } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 const Home = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -67,29 +66,6 @@ const Home = () => {
         <div className="space-y-6">
           <h2 className="text-3xl font-bold font-heading">{getGreeting()}</h2>
           <p className="text-forest/80">What would you like to cook today?</p>
-        </div>
-      </section>
-
-      {/* Scanner Section */}
-      <section className="px-4 py-6 bg-white">
-        <div className="flex flex-col items-center justify-center bg-[#FEF7CD]/30 rounded-xl p-6 space-y-4">
-          <Scan className="h-8 w-8 text-terracotta" />
-          <h3 className="font-heading font-semibold text-lg">Scan Ingredients</h3>
-          <p className="text-sm text-center text-forest/80">
-            Scan your ingredients to find matching recipes
-          </p>
-          <Button 
-            variant="outline"
-            className="bg-white hover:bg-white/90"
-            onClick={() => {
-              toast({
-                title: "Scanner",
-                description: "Scanner feature coming soon!",
-              });
-            }}
-          >
-            Open Scanner
-          </Button>
         </div>
       </section>
 

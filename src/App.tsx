@@ -13,6 +13,7 @@ import Onboarding from "./components/Onboarding";
 import Header from "./components/Header";
 import { LikedRecipesProvider } from "./components/LikedRecipesContext";
 import { Home as HomeIcon, Scan, BookOpen } from "lucide-react";
+import { useToast } from "./hooks/use-toast";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,14 @@ const queryClient = new QueryClient();
 const MobileNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const handleScanClick = () => {
+    toast({
+      title: "Scanner",
+      description: "Scanner feature coming soon!",
+    });
+  };
   
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-[#FEF7CD] shadow-sm z-10 safe-bottom border-t border-[#F1F0FB]">
@@ -36,6 +45,7 @@ const MobileNav = () => {
         <li className="relative">
           <button 
             className="flex flex-col items-center justify-center bg-terracotta text-white rounded-full p-4 -mt-8 shadow-md hover:bg-terracotta/90 transition-colors"
+            onClick={handleScanClick}
           >
             <Scan className="h-6 w-6" />
           </button>
