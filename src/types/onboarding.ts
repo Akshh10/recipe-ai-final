@@ -3,7 +3,7 @@ export interface OnboardingStep {
   title: string;
   description: string;
   image?: string;
-  type: "info" | "questions" | "howItWorks" | "ready";
+  type: "info" | "questions" | "howItWorks" | "auth" | "ready";
   questions?: {
     question: string;
     options: string[];

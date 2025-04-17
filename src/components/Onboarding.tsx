@@ -6,6 +6,7 @@ import InfoStep from "./onboarding/InfoStep";
 import QuestionsStep from "./onboarding/QuestionsStep";
 import HowItWorksStep from "./onboarding/HowItWorksStep";
 import ReadyStep from "./onboarding/ReadyStep";
+import AuthStep from "./onboarding/AuthStep";
 import StepProgress from "./onboarding/StepProgress";
 import StepNavigation from "./onboarding/StepNavigation";
 
@@ -41,8 +42,13 @@ const onboardingSteps: OnboardingStep[] = [
     type: "howItWorks"
   },
   {
-    title: "Your Next Meal Awaits!",
-    description: "Let's turn those ingredients into something amazing. Sign up or log in to save preferences and recipes (optional).",
+    title: "Create your account",
+    description: "Let's set up your profile to save your preferences and favorite recipes.",
+    type: "auth"
+  },
+  {
+    title: "Choose Your Meal Journey",
+    description: "Subscribe to unlock more delicious recipes and personalized meal suggestions.",
     type: "ready",
     plans: [
       {
@@ -79,9 +85,10 @@ const onboardingSteps: OnboardingStep[] = [
 
 interface OnboardingProps {
   onComplete: () => void;
+  onShowAuth: (type: "login" | "signup") => void;
 }
 
-const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
+const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onShowAuth }) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<number, string>>({});
   const [selectedPlan, setSelectedPlan] = useState<string>("Free");
@@ -152,6 +159,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         );
       case "howItWorks":
         return <HowItWorksStep step={step} />;
+      case "auth":
+        return <AuthStep step={step} onShowAuth={onShowAuth} />;
       case "ready":
         return (
           <ReadyStep
@@ -230,6 +239,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             onNext={handleNext}
             onPrev={handlePrev}
             showBack={showBackButton}
+            skipEnabled={onboardingSteps[currentStep].type === "auth"}
           />
         </div>
       </div>

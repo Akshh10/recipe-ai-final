@@ -19,6 +19,9 @@ const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
         <p className="text-forest/80 mb-2">
           {step.description}
         </p>
+        <p className="text-terracotta font-medium text-lg mt-2 mb-4">
+          Subscribe to unlock more delicious recipes tailored just for you!
+        </p>
       </div>
 
       <div className="w-full mb-6 space-y-3">
@@ -95,7 +98,7 @@ const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
               <div className="flex items-baseline mt-1">
                 <span className="text-lg font-bold">₹169</span>
                 <span className="text-xs ml-1">/week</span>
-                <span className="ml-2 text-xs bg-terracotta/20 text-terracotta px-2 py-0.5 rounded-full">Save 15%</span>
+                <span className="ml-2 text-xs bg-terracotta/20 text-terracotta px-2 py-0.5 rounded-full">Save 20%</span>
               </div>
             </div>
           </div>

@@ -16,6 +16,7 @@ import Header from "./components/Header";
 import { LikedRecipesProvider } from "./components/LikedRecipesContext";
 import { Home as HomeIcon, Scan, BookOpen } from "lucide-react";
 import { useToast } from "./hooks/use-toast";
+import AuthModal from "./components/auth/AuthModal";
 
 const queryClient = new QueryClient();
 
@@ -108,8 +109,10 @@ const AppRoutes = () => {
 };
 
 const App = () => {
-  const [showOnboarding, setShowOnboarding] = useState<boolean>(false); // Initially set to false
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const [showTransition, setShowTransition] = useState<boolean>(false);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [authType, setAuthType] = useState<"login" | "signup">("signup");
   
   useEffect(() => {
     // Check if onboarding has been completed before
@@ -134,16 +137,33 @@ const App = () => {
     setShowTransition(false);
   };
   
+  const handleShowAuth = (type: "login" | "signup") => {
+    setAuthType(type);
+    setShowAuthModal(true);
+  };
+  
   return (
     <QueryClientProvider client={queryClient}>
       <LikedRecipesProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
+          {showOnboarding && (
+            <Onboarding 
+              onComplete={handleOnboardingComplete} 
+              onShowAuth={handleShowAuth}
+            />
+          )}
           {showTransition && <TransitionScreen onComplete={handleTransitionComplete} />}
+          {showAuthModal && (
+            <AuthModal 
+              isOpen={showAuthModal}
+              onClose={() => setShowAuthModal(false)}
+              initialView={authType}
+            />
+          )}
           <BrowserRouter>
-            <AppRoutes />
+            {!showOnboarding && <AppRoutes />}
           </BrowserRouter>
         </TooltipProvider>
       </LikedRecipesProvider>
