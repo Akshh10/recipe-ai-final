@@ -14,7 +14,7 @@ const onboardingSteps: OnboardingStep[] = [
   {
     title: "Welcome to Recipe AI!",
     description: "Find amazing Indian meals hiding in your own kitchen. Cook more, waste less.",
-    image: "/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9",
     type: "info"
   },
   {
@@ -112,6 +112,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onShowAuth }) => {
     } else {
       localStorage.setItem("selectedPlan", selectedPlan);
       localStorage.setItem("cookingPreferences", JSON.stringify(selectedOptions));
+      localStorage.setItem("onboardingComplete", "true");
       onComplete();
     }
   };
