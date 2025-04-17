@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion } from 'framer-motion';
 
@@ -16,29 +15,15 @@ const Header = () => {
       transition={{ duration: 0.3 }}
     >
       <div className="flex justify-between items-center max-w-screen-xl mx-auto">
-        <div className="w-12">
-          <motion.div 
-            className="text-xl font-heading font-bold text-forest"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/')}
-          >
-            Recipe<span className="text-terracotta">AI</span>
-          </motion.div>
-        </div>
         <motion.div 
-          className="relative flex items-center bg-white/70 rounded-full px-3 py-1.5 w-72 border border-cream shadow-inner mx-4"
-          initial={{ width: "60%" }}
-          whileFocus={{ width: "80%" }}
-          transition={{ type: "spring", stiffness: 300 }}
+          className="text-xl font-heading font-bold text-forest"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/')}
         >
-          <Search className="h-4 w-4 text-forest/70 mr-2" />
-          <input
-            type="text"
-            placeholder="Search recipes..."
-            className="bg-transparent outline-none flex-1 text-sm text-forest placeholder-forest/60"
-          />
+          Recipe<span className="text-terracotta">AI</span>
         </motion.div>
+        
         <motion.button 
           onClick={() => navigate('/profile')}
           className="rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"

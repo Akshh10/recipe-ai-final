@@ -56,18 +56,21 @@ const onboardingSteps: OnboardingStep[] = [
         price: "₹169",
         interval: "week",
         recommended: true,
+        discount: "20% off",
         features: ["Unlimited recipe search", "Unlimited favorites", "Detailed nutritional info", "Weekly meal planner"]
       },
       {
         name: "Quarterly",
         price: "₹449",
         interval: "3 months",
+        discount: "30% off",
         features: ["All Weekly plan features", "Ingredient substitutions", "No ads"]
       },
       {
         name: "Annual",
         price: "₹1299",
         interval: "year",
+        discount: "40% off",
         features: ["All Quarterly features", "Priority customer support", "Early access to new features"]
       }
     ]

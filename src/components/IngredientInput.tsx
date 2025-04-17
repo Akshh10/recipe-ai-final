@@ -1,23 +1,65 @@
 
-import React, { useState, KeyboardEvent } from "react";
+import React, { useState, KeyboardEvent, useEffect, useRef } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { motion, AnimatePresence } from "framer-motion";
+import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface IngredientInputProps {
   onIngredientsChange: (ingredients: string[]) => void;
 }
 
+// Common ingredients list for autocomplete suggestions
+const commonIngredients = [
+  "Tomato", "Onion", "Garlic", "Ginger", "Potato",
+  "Rice", "Wheat flour", "Paneer", "Chicken", "Mutton",
+  "Fish", "Eggs", "Milk", "Yogurt", "Cheese",
+  "Butter", "Ghee", "Oil", "Salt", "Sugar",
+  "Black pepper", "Red chilli", "Turmeric", "Cumin", "Coriander",
+  "Garam masala", "Cardamom", "Cinnamon", "Cloves", "Mustard seeds",
+  "Fenugreek", "Curry leaves", "Mint", "Cilantro", "Lemon",
+  "Coconut", "Cashew nuts", "Almonds", "Raisins"
+];
+
 const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }) => {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleAddIngredient = () => {
-    if (inputValue.trim() !== "" && !ingredients.includes(inputValue.trim())) {
-      const newIngredients = [...ingredients, inputValue.trim()];
+  useEffect(() => {
+    if (inputValue.trim() === "") {
+      setFilteredSuggestions([]);
+      return;
+    }
+    
+    const filtered = commonIngredients
+      .filter(ingredient => 
+        ingredient.toLowerCase().includes(inputValue.toLowerCase()) && 
+        !ingredients.includes(ingredient)
+      )
+      .slice(0, 5);
+    
+    setFilteredSuggestions(filtered);
+    
+    if (filtered.length > 0 && inputValue.trim() !== "") {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  }, [inputValue, ingredients]);
+
+  const handleAddIngredient = (value: string = inputValue) => {
+    const ingredient = value.trim();
+    if (ingredient !== "" && !ingredients.includes(ingredient)) {
+      const newIngredients = [...ingredients, ingredient];
       setIngredients(newIngredients);
       onIngredientsChange(newIngredients);
       setInputValue("");
+      setIsOpen(false);
     }
   };
 
@@ -40,43 +82,81 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <div className="flex gap-2">
-        <Input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Enter ingredients you have (e.g., paneer, tomato, garam masala)"
-          className="flex-grow focus-visible:ring-terracotta"
-        />
-        <Button 
-          onClick={handleAddIngredient} 
-          className="bg-terracotta hover:bg-terracotta/90 text-white"
-        >
-          <Plus className="h-5 w-5" />
-          <span className="ml-1 hidden sm:inline">Add</span>
-        </Button>
-      </div>
-
-      {ingredients.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-2 animate-fade-in">
-          {ingredients.map((ingredient, index) => (
-            <div
-              key={index}
-              className="ingredient-tag flex items-center gap-1"
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <div className="flex gap-2">
+            <Input
+              ref={inputRef}
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter ingredients you have (e.g., paneer, tomato, garam masala)"
+              className="flex-grow focus-visible:ring-terracotta"
+            />
+            <Button 
+              onClick={() => handleAddIngredient()} 
+              className="bg-terracotta hover:bg-terracotta/90 text-white"
             >
-              <span>{ingredient}</span>
-              <button
-                onClick={() => removeIngredient(index)}
-                className="text-forest hover:text-terracotta transition-colors"
-                aria-label={`Remove ${ingredient}`}
+              <Plus className="h-5 w-5" />
+              <span className="ml-1 hidden sm:inline">Add</span>
+            </Button>
+          </div>
+        </PopoverTrigger>
+        {filteredSuggestions.length > 0 && (
+          <PopoverContent className="p-0 w-[calc(100%-5rem)] shadow-md" align="start" sideOffset={5}>
+            <Command>
+              <CommandGroup>
+                {filteredSuggestions.map((suggestion, index) => (
+                  <CommandItem
+                    key={index}
+                    value={suggestion}
+                    onSelect={() => {
+                      handleAddIngredient(suggestion);
+                      setInputValue("");
+                    }}
+                    className="cursor-pointer hover:bg-cream/50"
+                  >
+                    {suggestion}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        )}
+      </Popover>
+
+      <AnimatePresence>
+        {ingredients.length > 0 && (
+          <motion.div 
+            className="mt-4 flex flex-wrap gap-2"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {ingredients.map((ingredient, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+                className="ingredient-tag flex items-center gap-1 bg-cream px-3 py-1 rounded-full text-forest"
+                layout
               >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+                <span>{ingredient}</span>
+                <button
+                  onClick={() => removeIngredient(index)}
+                  className="text-forest hover:text-terracotta transition-colors ml-1"
+                  aria-label={`Remove ${ingredient}`}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
