@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +10,7 @@ import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./components/Onboarding";
+import TransitionScreen from "./components/TransitionScreen";
 import Header from "./components/Header";
 import { LikedRecipesProvider } from "./components/LikedRecipesContext";
 import { Home as HomeIcon, Scan, BookOpen } from "lucide-react";
@@ -27,15 +28,16 @@ const MobileNav = () => {
     toast({
       title: "Scanner",
       description: "Scanner feature coming soon!",
+      className: "bg-cream text-forest",
     });
   };
   
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#FEF7CD] shadow-sm z-10 safe-bottom border-t border-[#F1F0FB]">
+    <nav className="fixed bottom-0 left-0 right-0 bg-offwhite shadow-lg z-10 safe-bottom border-t border-cream">
       <ul className="flex justify-around items-center py-3 px-6">
         <li>
           <button 
-            className={`flex flex-col items-center ${location.pathname === '/' ? 'text-terracotta' : 'text-forest'}`}
+            className={`flex flex-col items-center transition-all duration-300 ${location.pathname === '/' ? 'text-terracotta scale-110' : 'text-forest'}`}
             onClick={() => navigate('/')}
           >
             <HomeIcon className="h-5 w-5 mb-1" />
@@ -44,7 +46,7 @@ const MobileNav = () => {
         </li>
         <li className="relative">
           <button 
-            className="flex flex-col items-center justify-center bg-terracotta text-white rounded-full p-4 -mt-8 shadow-md hover:bg-terracotta/90 transition-colors"
+            className="flex flex-col items-center justify-center bg-terracotta text-white rounded-full p-4 -mt-8 shadow-md hover:bg-terracotta/90 transition-colors hover:shadow-xl transform transition-transform hover:scale-105"
             onClick={handleScanClick}
           >
             <Scan className="h-6 w-6" />
@@ -52,7 +54,7 @@ const MobileNav = () => {
         </li>
         <li>
           <button 
-            className={`flex flex-col items-center ${location.pathname === '/favorites' ? 'text-terracotta' : 'text-forest'}`}
+            className={`flex flex-col items-center transition-all duration-300 ${location.pathname === '/favorites' ? 'text-terracotta scale-110' : 'text-forest'}`}
             onClick={() => navigate('/favorites')}
           >
             <BookOpen className="h-5 w-5 mb-1" />
@@ -81,6 +83,7 @@ const AppRoutes = () => {
 
 const App = () => {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  const [showTransition, setShowTransition] = useState<boolean>(false);
   
   useEffect(() => {
     const hasCompletedOnboarding = localStorage.getItem("onboardingComplete");
@@ -92,6 +95,11 @@ const App = () => {
   const handleOnboardingComplete = () => {
     localStorage.setItem("onboardingComplete", "true");
     setShowOnboarding(false);
+    setShowTransition(true);
+  };
+  
+  const handleTransitionComplete = () => {
+    setShowTransition(false);
   };
   
   return (
@@ -101,6 +109,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
+          {showTransition && <TransitionScreen onComplete={handleTransitionComplete} />}
           <BrowserRouter>
             <AppRoutes />
           </BrowserRouter>
