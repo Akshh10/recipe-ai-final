@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Check } from 'lucide-react';
 import { OnboardingStep } from '@/types/onboarding';
 

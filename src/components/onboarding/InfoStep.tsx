@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { ChefHat } from 'lucide-react';
 import { OnboardingStep } from '@/types/onboarding';
 

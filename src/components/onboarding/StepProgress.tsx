@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 interface StepProgressProps {
   steps: number;
   currentStep: number;

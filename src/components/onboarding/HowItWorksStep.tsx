@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { OnboardingStep } from '@/types/onboarding';
 
 interface HowItWorksStepProps {
