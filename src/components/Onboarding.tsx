@@ -1,5 +1,7 @@
+
 import React, { useState } from "react";
 import { OnboardingStep } from "@/types/onboarding";
+import { motion, AnimatePresence } from "framer-motion";
 import InfoStep from "./onboarding/InfoStep";
 import QuestionsStep from "./onboarding/QuestionsStep";
 import HowItWorksStep from "./onboarding/HowItWorksStep";
@@ -47,20 +49,26 @@ const onboardingSteps: OnboardingStep[] = [
         name: "Free",
         price: "₹0",
         interval: "forever",
-        features: ["Basic recipe search", "Save up to 5 favorites", "Standard recipe view"]
+        features: ["Basic recipe search", "1 meal option per ingredient", "Save up to 3 favorites"]
       },
       {
-        name: "Premium",
-        price: "₹149",
-        interval: "month",
+        name: "Weekly",
+        price: "₹169",
+        interval: "week",
         recommended: true,
-        features: ["Unlimited recipe search", "Unlimited favorites", "Detailed nutritional info", "Ingredient substitutions", "No ads"]
+        features: ["Unlimited recipe search", "Unlimited favorites", "Detailed nutritional info", "Weekly meal planner"]
+      },
+      {
+        name: "Quarterly",
+        price: "₹449",
+        interval: "3 months",
+        features: ["All Weekly plan features", "Ingredient substitutions", "No ads"]
       },
       {
         name: "Annual",
-        price: "₹999",
+        price: "₹1299",
         interval: "year",
-        features: ["All Premium features", "Save ₹789 per year", "Priority updates"]
+        features: ["All Quarterly features", "Priority customer support", "Early access to new features"]
       }
     ]
   }
@@ -75,9 +83,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [selectedOptions, setSelectedOptions] = useState<Record<number, string>>({});
   const [selectedPlan, setSelectedPlan] = useState<string>("Free");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
 
   const handleNext = () => {
     const step = onboardingSteps[currentStep];
+    setDirection("forward");
     
     if (step.type === "questions") {
       if (currentQuestionIndex < step.questions!.length - 1) {
@@ -98,6 +108,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
   const handlePrev = () => {
     const step = onboardingSteps[currentStep];
+    setDirection("backward");
     
     if (step.type === "questions" && currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -154,15 +165,53 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const showBackButton = currentStep > 0 || 
     (onboardingSteps[currentStep].type === "questions" && currentQuestionIndex > 0);
 
+  const slideVariants = {
+    enterForward: {
+      x: 300,
+      opacity: 0,
+    },
+    enterBackward: {
+      x: -300,
+      opacity: 0,
+    },
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exitForward: {
+      x: -300,
+      opacity: 0,
+    },
+    exitBackward: {
+      x: 300,
+      opacity: 0,
+    },
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col h-full">
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-offwhite via-soft-purple/10 to-cream/20 flex flex-col h-full">
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-md mx-auto flex flex-col items-center">
           <StepProgress steps={onboardingSteps.length} currentStep={currentStep} />
           
-          <div className="w-full animate-fade-in">
-            {renderCurrentStep()}
-          </div>
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div 
+              key={`${currentStep}-${currentQuestionIndex}`}
+              className="w-full"
+              custom={direction}
+              variants={slideVariants}
+              initial={direction === "forward" ? "enterForward" : "enterBackward"}
+              animate="center"
+              exit={direction === "forward" ? "exitForward" : "exitBackward"}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+              }}
+            >
+              {renderCurrentStep()}
+            </motion.div>
+          </AnimatePresence>
 
           <StepNavigation
             currentStep={currentStep}

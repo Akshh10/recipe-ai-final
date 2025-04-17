@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -5,7 +6,8 @@ import IngredientInput from "@/components/IngredientInput";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeDetailModal from "@/components/RecipeDetailModal";
 import { findRecipesByIngredients, Recipe } from "@/utils/mockData";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ChefHat } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Home = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -59,26 +61,65 @@ const Home = () => {
     return "Good evening!";
   };
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col pb-24">
+    <motion.div 
+      className="min-h-screen flex flex-col pb-24"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       {/* Hero Section */}
-      <section className="px-6 py-8 bg-gradient-to-br from-cream/30 via-soft-purple/20 to-soft-yellow/30 mb-6">
+      <motion.section 
+        className="px-6 py-10 bg-gradient-to-br from-cream/30 via-soft-purple/20 to-soft-yellow/30 mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="max-w-lg mx-auto space-y-4 text-center">
-          <div className="space-y-2">
+          <motion.div 
+            className="space-y-2"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <h2 className="text-4xl font-bold font-heading text-forest">
               {getGreeting()}
             </h2>
             <p className="text-xl font-medium text-forest/90">
               What would you like to cook today?
             </p>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Manual Input Section */}
-      <section className="px-4 py-6 bg-white">
+      <motion.section 
+        className="px-4 py-6 bg-white rounded-t-xl mx-2 shadow-sm"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-heading font-semibold">Find recipes</h2>
+          <div className="flex items-center gap-2">
+            <ChefHat className="h-5 w-5 text-terracotta" />
+            <h2 className="text-xl font-heading font-semibold">Find recipes</h2>
+          </div>
           <Button 
             variant="ghost" 
             className="p-0 h-auto text-sm text-terracotta flex items-center gap-1"
@@ -94,18 +135,32 @@ const Home = () => {
         <IngredientInput onIngredientsChange={setIngredients} />
         <Button 
           onClick={handleSearch}
-          className="w-full mt-4 bg-terracotta hover:bg-terracotta/90 text-white font-medium"
+          className="w-full mt-4 bg-terracotta hover:bg-terracotta/90 text-white font-medium shadow-sm hover:shadow-md transition-all"
           disabled={loading}
         >
           {loading ? 'Searching...' : 'Search Recipes'}
         </Button>
-      </section>
+      </motion.section>
 
       {/* Recipes Section */}
-      <section className="px-4 py-6 bg-white">
-        <h2 className="text-xl font-semibold font-heading mb-4">
-          {hasSearched ? 'Found Recipes' : 'Popular Recipes'}
-        </h2>
+      <motion.section 
+        className="px-4 py-6 bg-white mx-2 rounded-b-xl shadow-sm mb-4"
+        variants={container}
+        initial="hidden"
+        animate="show"
+      >
+        <motion.div className="mb-6" variants={item}>
+          <h2 className="text-2xl font-semibold font-heading mb-1 text-forest">
+            {hasSearched ? 'Found Recipes' : 'Popular Recipes'}
+          </h2>
+          <p className="text-sm text-forest/70">
+            {hasSearched ? 
+              'Recipes that match your ingredients' : 
+              'Trending recipes that our community loves'
+            }
+          </p>
+        </motion.div>
+        
         <div className="grid gap-4">
           {(hasSearched ? recipes : findRecipesByIngredients(['paneer', 'rice', 'potato']).slice(0, 4)).map((recipe) => (
             <RecipeCard
@@ -124,7 +179,7 @@ const Home = () => {
             />
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Modal */}
       {selectedRecipe && (
@@ -142,7 +197,7 @@ const Home = () => {
           onClose={() => setSelectedRecipe(null)}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

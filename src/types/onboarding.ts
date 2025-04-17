@@ -14,5 +14,6 @@ export interface OnboardingStep {
     interval: string;
     features: string[];
     recommended?: boolean;
+    discount?: string;
   }[];
 }
