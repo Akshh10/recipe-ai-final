@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Motion, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { User, Mail, Phone, Lock, Globe } from 'lucide-react';
 import { OnboardingStep } from '@/types/onboarding';
