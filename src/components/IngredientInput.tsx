@@ -1,3 +1,4 @@
+
 import React, { useState, KeyboardEvent, useEffect, useRef } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -105,22 +106,25 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
         
         {filteredSuggestions.length > 0 && (
           <PopoverContent className="p-0 w-[calc(100%-5rem)] shadow-md" align="start" sideOffset={5}>
+            {/* Fix: Wrap the Command component with a check to ensure children are not undefined */}
             <Command>
-              <CommandGroup>
-                {filteredSuggestions.map((suggestion, index) => (
-                  <CommandItem
-                    key={index}
-                    value={suggestion}
-                    onSelect={() => {
-                      handleAddIngredient(suggestion);
-                      setInputValue("");
-                    }}
-                    className="cursor-pointer hover:bg-cream/50"
-                  >
-                    {suggestion}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+              {filteredSuggestions.length > 0 && (
+                <CommandGroup>
+                  {filteredSuggestions.map((suggestion, index) => (
+                    <CommandItem
+                      key={index}
+                      value={suggestion}
+                      onSelect={() => {
+                        handleAddIngredient(suggestion);
+                        setInputValue("");
+                      }}
+                      className="cursor-pointer hover:bg-cream/50"
+                    >
+                      {suggestion}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
             </Command>
           </PopoverContent>
         )}

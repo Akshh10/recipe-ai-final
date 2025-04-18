@@ -12,9 +12,12 @@ const TransitionScreen: React.FC<TransitionScreenProps> = ({ onComplete }) => {
   const [isVisible, setIsVisible] = useState(true);
   
   useEffect(() => {
+    // Make sure onComplete is a function before calling it
+    const handleComplete = typeof onComplete === 'function' ? onComplete : () => {};
+    
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 500);
+      setTimeout(handleComplete, 500);
     }, 4000);
     
     return () => clearTimeout(timer);

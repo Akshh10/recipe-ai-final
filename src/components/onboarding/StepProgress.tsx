@@ -10,6 +10,9 @@ interface StepProgressProps {
 const StepProgress = ({ steps, currentStep }: StepProgressProps) => {
   // Make sure steps is defined and is a positive number
   const stepsCount = typeof steps === 'number' && steps > 0 ? steps : 1;
+  // Ensure currentStep is in a valid range
+  const validCurrentStep = typeof currentStep === 'number' && currentStep >= 0 ? 
+    Math.min(currentStep, stepsCount - 1) : 0;
   
   return (
     <motion.div 
@@ -18,16 +21,17 @@ const StepProgress = ({ steps, currentStep }: StepProgressProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
     >
+      {/* Create an array with the correct length and map over it */}
       {Array.from({ length: stepsCount }).map((_, index) => (
         <motion.div
           key={index}
           className={`h-1.5 rounded-full ${
-            index <= currentStep ? "bg-terracotta" : "bg-gray-200"
+            index <= validCurrentStep ? "bg-terracotta" : "bg-gray-200"
           }`}
           initial={{ width: "0.5rem" }}
           animate={{ 
-            width: index === currentStep ? "2.5rem" : "1rem",
-            opacity: index === currentStep ? 1 : 0.7
+            width: index === validCurrentStep ? "2.5rem" : "1rem",
+            opacity: index === validCurrentStep ? 1 : 0.7
           }}
           transition={{ duration: 0.3 }}
         />

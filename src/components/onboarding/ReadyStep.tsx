@@ -11,15 +11,20 @@ interface ReadyStepProps {
 }
 
 const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
-  if (!step || !step.plans || !Array.isArray(step.plans)) {
-    return <div>Loading subscription plans...</div>;
+  // Safety check to ensure step and plans are valid
+  if (!step || !step.plans || !Array.isArray(step.plans) || step.plans.length === 0) {
+    return (
+      <div className="text-center p-4">
+        <p>Loading subscription plans...</p>
+      </div>
+    );
   }
 
   return (
     <>
       <div className="text-center mb-6">
         <h2 className="text-2xl font-heading font-bold text-forest mb-4">
-          {step.title}
+          {step.title || 'Choose Your Plan'}
         </h2>
         <p className="text-terracotta font-medium text-lg mb-4">
           Subscribe to unlock delicious recipes tailored just for you!
@@ -28,7 +33,7 @@ const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
 
       <ScrollArea className="w-full h-[400px] pr-4">
         <div className="w-full mb-6 space-y-3">
-          {/* Updated plan options with new pricing */}
+          {/* Plan options with safety checks */}
           {step.plans.map((plan, index) => (
             <motion.div 
               key={plan.name || `plan-${index}`}
@@ -48,17 +53,17 @@ const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
                   Recommended
                 </div>
               )}
-              <div className="flex items-center" onClick={() => onPlanSelect(plan.name)}>
+              <div className="flex items-center" onClick={() => onPlanSelect(plan.name || '')}>
                 <div className="mr-2 h-5 w-5 border rounded-full flex items-center justify-center">
                   {selectedPlan === plan.name && (
                     <div className="h-3 w-3 rounded-full bg-terracotta"></div>
                   )}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold">{plan.name}</h3>
+                  <h3 className="font-bold">{plan.name || `Plan ${index + 1}`}</h3>
                   <div className="flex items-baseline mt-1">
-                    <span className="text-lg font-bold">{plan.price}</span>
-                    <span className="text-xs ml-1">/{plan.interval}</span>
+                    <span className="text-lg font-bold">{plan.price || 'Free'}</span>
+                    <span className="text-xs ml-1">/{plan.interval || 'month'}</span>
                     {plan.discount && (
                       <span className="ml-2 text-xs bg-terracotta/20 text-terracotta px-2 py-0.5 rounded-full">
                         {plan.discount}
@@ -67,7 +72,7 @@ const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
                   </div>
                 </div>
               </div>
-              {plan.features && Array.isArray(plan.features) && (
+              {plan.features && Array.isArray(plan.features) && plan.features.length > 0 && (
                 <div className="mt-3 pl-7">
                   <ul className="text-sm">
                     {plan.features.map((feature, featureIdx) => (

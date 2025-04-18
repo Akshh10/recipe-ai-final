@@ -37,10 +37,10 @@ const InfoStep = ({ step }: InfoStepProps) => {
 
       <div className="text-center mb-6">
         <h2 className="text-2xl font-heading font-bold text-forest mb-4">
-          {step.title}
+          {step.title || 'Welcome'}
         </h2>
         <p className="text-forest/80">
-          {step.description}
+          {step.description || 'Getting started with cooking made easy'}
         </p>
       </div>
 
