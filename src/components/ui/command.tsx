@@ -61,10 +61,7 @@ const CommandList = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
 >(({ className, children, ...props }, ref) => {
-  // Ensure children is not undefined or null
-  const safeChildren = React.useMemo(() => {
-    return children || null;
-  }, [children]);
+  const safeChildren = React.useMemo(() => children || null, [children]);
   
   return (
     <CommandPrimitive.List
@@ -96,25 +93,18 @@ const CommandGroup = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Group>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
 >(({ className, children, ...props }, ref) => {
-  // Enhanced check for valid children
-  const hasChildren = React.useMemo(() => {
-    if (children === null || children === undefined) {
-      return false;
-    }
+  const hasValidChildren = React.useMemo(() => {
+    if (!children) return false;
     
-    // Check if there are any valid children when in array form
     if (Array.isArray(children)) {
-      const validChildren = React.Children.toArray(children).filter(Boolean);
-      return validChildren.length > 0;
+      // Filter out any null, undefined or empty values
+      return React.Children.toArray(children).filter(Boolean).length > 0;
     }
     
     return true;
   }, [children]);
   
-  // Only render the group if it has valid children
-  if (!hasChildren) {
-    return null;
-  }
+  if (!hasValidChildren) return null;
   
   return (
     <CommandPrimitive.Group
@@ -147,9 +137,9 @@ CommandSeparator.displayName = CommandPrimitive.Separator.displayName
 const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
->(({ className, ...props }, ref) => {
-  // Safety check for missing value prop
-  if (!props || typeof props.value !== 'string' || props.value === '') {
+>(({ className, value, ...props }, ref) => {
+  // Additional safety check for value prop
+  if (value === undefined || value === null || value === '') {
     console.warn("CommandItem: Missing or invalid 'value' prop");
     return null;
   }
@@ -161,6 +151,7 @@ const CommandItem = React.forwardRef<
         "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
         className
       )}
+      value={value}
       {...props}
     />
   )

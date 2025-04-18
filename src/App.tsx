@@ -17,6 +17,10 @@ import { LikedRecipesProvider } from "./components/LikedRecipesContext";
 import { Home as HomeIcon, Scan, BookOpen } from "lucide-react";
 import { useToast } from "./hooks/use-toast";
 import AuthModal from "./components/auth/AuthModal";
+import AccountSettings from "./pages/AccountSettings";
+import HelpSupport from "./pages/HelpSupport";
+import Subscription from "./pages/Subscription";
+import SavedRecipes from "./pages/SavedRecipes";
 
 const queryClient = new QueryClient();
 
@@ -91,15 +95,28 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Conditional Header component that shows only on specified routes
+const ConditionalHeader = () => {
+  const location = useLocation();
+  // Only show header on certain pages
+  const showHeader = ['/', '/favorites', '/profile'].includes(location.pathname);
+  
+  return showHeader ? <Header /> : null;
+};
+
 const AppRoutes = () => {
   return (
     <>
-      <Header />
+      <ConditionalHeader />
       <PageTransition>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/account-settings" element={<AccountSettings />} />
+          <Route path="/help-support" element={<HelpSupport />} />
+          <Route path="/subscription" element={<Subscription />} />
+          <Route path="/saved-recipes" element={<SavedRecipes />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>

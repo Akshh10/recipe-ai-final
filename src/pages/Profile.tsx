@@ -3,8 +3,13 @@ import React from "react";
 import { User, Settings, CreditCard, BookOpen, Info, LogOut, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
   // In a real app, this would come from an auth context
   const user = {
     name: "Guest User",
@@ -17,24 +22,35 @@ const Profile = () => {
     {
       icon: Settings,
       label: "Account Settings",
-      link: "#"
+      link: "/account-settings"
     },
     {
       icon: CreditCard,
       label: "Subscription & Billing",
-      link: "#"
+      link: "/subscription"
     },
     {
       icon: BookOpen,
       label: "Saved Recipes",
-      link: "#"
+      link: "/saved-recipes"
     },
     {
       icon: Info,
       label: "Help & Support",
-      link: "#"
+      link: "/help-support"
     }
   ];
+  
+  const handleLogout = () => {
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
+    // In a real app, this would clear auth tokens and redirect
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
+  };
   
   return (
     <div className="min-h-screen flex flex-col pb-16">
@@ -60,7 +76,10 @@ const Profile = () => {
                   <p className="font-bold">{user.plan}</p>
                 </div>
                 {user.plan === "Free" ? (
-                  <Button className="bg-terracotta hover:bg-terracotta/90 text-white">
+                  <Button 
+                    className="bg-terracotta hover:bg-terracotta/90 text-white"
+                    onClick={() => navigate('/subscription')}
+                  >
                     Upgrade
                   </Button>
                 ) : (
@@ -73,13 +92,16 @@ const Profile = () => {
           <div className="bg-white rounded-lg shadow mb-6">
             {menuItems.map((item, index) => (
               <React.Fragment key={item.label}>
-                <a href={item.link} className="flex items-center justify-between p-4">
+                <button 
+                  onClick={() => navigate(item.link)}
+                  className="flex items-center justify-between p-4 w-full text-left hover:bg-cream/10"
+                >
                   <div className="flex items-center">
                     <item.icon className="h-5 w-5 text-terracotta mr-3" />
                     <span>{item.label}</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-forest/50" />
-                </a>
+                </button>
                 {index < menuItems.length - 1 && <Separator />}
               </React.Fragment>
             ))}
@@ -88,6 +110,7 @@ const Profile = () => {
           <Button 
             variant="outline" 
             className="w-full border-forest/20 text-forest/70 mb-4"
+            onClick={handleLogout}
           >
             <LogOut className="h-4 w-4 mr-2" />
             Log Out
