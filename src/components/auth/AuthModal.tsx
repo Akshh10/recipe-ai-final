@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import Login from './Login';
@@ -18,6 +17,7 @@ const AuthModal = ({ isOpen, onClose, initialView }: AuthModalProps) => {
     // In a real app, this would trigger Google OAuth flow
     console.log("Google authentication triggered");
     onClose();
+    return null; // Add this to fix the ReactNode error
   };
 
   const getTitle = () => {

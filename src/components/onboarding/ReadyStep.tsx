@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { OnboardingStep } from '@/types/onboarding';
 import { motion } from 'framer-motion';
@@ -11,17 +10,16 @@ interface ReadyStepProps {
 }
 
 const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
-  // Updated pricing data
   const plans = [
     {
       name: "Free",
       price: "$0",
       interval: "forever",
-      features: ["Basic recipe search", "1 meal option per ingredient", "Save up to 3 favorites"],
+      features: ["Basic recipe search", "2 scans per day", "Save up to 3 favorites"],
     },
     {
       name: "Weekly",
-      price: "$1.69",
+      price: "$1.99",
       interval: "week",
       recommended: true,
       discount: "20% off",
@@ -29,14 +27,14 @@ const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
     },
     {
       name: "Quarterly",
-      price: "$6.69",
+      price: "$14.99",
       interval: "3 months",
       discount: "30% off",
       features: ["All Weekly plan features", "Ingredient substitutions", "No ads"],
     },
     {
       name: "Annual",
-      price: "$19.99",
+      price: "$49.99",
       interval: "year",
       discount: "40% off",
       features: ["All Quarterly features", "Priority customer support", "Early access to new features"],

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ArrowLeft, Check, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -15,15 +14,15 @@ const Subscription = () => {
       name: "Free",
       price: "$0/month",
       features: [
-        "5 recipes per day",
-        "Basic ingredient matching",
+        "2 scans per day",
+        "Basic recipe search",
         "Limited recipe catalog access"
       ],
       current: true
     },
     {
-      name: "Premium",
-      price: "$4.99/month",
+      name: "Weekly",
+      price: "$1.99/week",
       features: [
         "Unlimited recipes",
         "Advanced ingredient matching",
@@ -34,14 +33,24 @@ const Subscription = () => {
       current: false
     },
     {
-      name: "Family",
-      price: "$9.99/month",
+      name: "Quarterly",
+      price: "$14.99/3 months",
       features: [
-        "Everything in Premium",
-        "Up to 5 family members",
-        "Family meal planning",
-        "Grocery list sharing",
+        "Everything in Weekly",
+        "Ingredient substitutions",
+        "No ads",
         "Priority support"
+      ],
+      current: false
+    },
+    {
+      name: "Annual",
+      price: "$49.99/year",
+      features: [
+        "Everything in Quarterly",
+        "Early access features",
+        "Family meal planning",
+        "Grocery list sharing"
       ],
       current: false
     }

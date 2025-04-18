@@ -9,29 +9,18 @@ interface InfoStepProps {
 }
 
 const InfoStep = ({ step }: InfoStepProps) => {
-  if (!step) {
-    return null;
-  }
+  if (!step) return null;
   
   return (
     <>
       <div className="relative mb-12">
         <motion.div 
-          className="bg-cream/50 p-6 rounded-full relative z-10 flex items-center justify-center mb-6"
+          className="bg-terracotta/20 p-6 rounded-full relative z-10 flex items-center justify-center mb-6 w-24 h-24 mx-auto"
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5 }}
         >
           <ChefHat className="h-12 w-12 text-terracotta" />
-        </motion.div>
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <p className="font-medium text-terracotta text-xl">Culinary Magic</p>
-          <p className="text-forest/80 text-sm mt-1">Where Every Ingredient Tells a Story</p>
         </motion.div>
       </div>
 

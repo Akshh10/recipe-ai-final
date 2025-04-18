@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { TextShimmer } from './ui/text-shimmer';
+import { TextShimmerWave } from './ui/text-shimmer-wave';
 import { motion } from 'framer-motion';
 import { Card } from './ui/card';
 
@@ -12,7 +12,6 @@ const TransitionScreen: React.FC<TransitionScreenProps> = ({ onComplete }) => {
   const [isVisible, setIsVisible] = useState(true);
   
   useEffect(() => {
-    // Make sure onComplete is a function before calling it
     const handleComplete = typeof onComplete === 'function' ? onComplete : () => {};
     
     const timer = setTimeout(() => {
@@ -27,33 +26,29 @@ const TransitionScreen: React.FC<TransitionScreenProps> = ({ onComplete }) => {
   
   return (
     <motion.div 
-      className="fixed inset-0 z-50 bg-gradient-to-br from-terracotta/90 to-cream flex items-center justify-center"
+      className="fixed inset-0 z-50 bg-gradient-to-br from-terracotta/90 to-cream/20 flex items-center justify-center"
       initial={{ opacity: 1 }}
       animate={{ opacity: isVisible ? 1 : 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
       <div className="text-center p-8 max-w-md">
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+        <TextShimmerWave
+          className="text-4xl md:text-5xl font-heading font-bold mb-4 text-white"
+          duration={2}
+          spread={1.5}
         >
-          <TextShimmer>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-white">
-              Mixing ingredients with a dash of AI brilliance...
-            </h1>
-          </TextShimmer>
-          
-          <motion.p 
-            className="text-cream text-lg mt-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            Your delicious journey starts soon!
-          </motion.p>
-        </motion.div>
+          Creating your perfect dish...
+        </TextShimmerWave>
+        
+        <motion.p 
+          className="text-cream text-lg mt-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          Your culinary journey begins now!
+        </motion.p>
         
         <motion.div 
           className="mt-8 flex justify-center"
