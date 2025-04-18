@@ -80,9 +80,13 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
     onIngredientsChange(newIngredients);
   };
 
+  // Make sure we have a valid array of suggestions
+  const validSuggestions = Array.isArray(filteredSuggestions) ? filteredSuggestions : [];
+  const showSuggestions = isOpen && validSuggestions.length > 0;
+
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <Popover open={isOpen && filteredSuggestions.length > 0} onOpenChange={setIsOpen}>
+      <Popover open={showSuggestions} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div className="flex gap-2">
             <Input
@@ -104,15 +108,14 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
           </div>
         </PopoverTrigger>
         
-        {filteredSuggestions.length > 0 && (
+        {showSuggestions && (
           <PopoverContent className="p-0 w-[calc(100%-5rem)] shadow-md" align="start" sideOffset={5}>
-            {/* Fix: Wrap the Command component with a check to ensure children are not undefined */}
             <Command>
-              {filteredSuggestions.length > 0 && (
+              {validSuggestions.length > 0 && (
                 <CommandGroup>
-                  {filteredSuggestions.map((suggestion, index) => (
+                  {validSuggestions.map((suggestion, index) => (
                     <CommandItem
-                      key={index}
+                      key={`suggestion-${index}`}
                       value={suggestion}
                       onSelect={() => {
                         handleAddIngredient(suggestion);
@@ -140,7 +143,7 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
           >
             {ingredients.map((ingredient, index) => (
               <motion.div
-                key={index}
+                key={`ingredient-${index}`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
