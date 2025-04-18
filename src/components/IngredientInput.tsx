@@ -1,4 +1,3 @@
-
 import React, { useState, KeyboardEvent, useEffect, useRef } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -82,7 +81,7 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <Popover open={isOpen && filteredSuggestions.length > 0} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div className="flex gap-2">
             <Input
@@ -103,6 +102,7 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
             </Button>
           </div>
         </PopoverTrigger>
+        
         {filteredSuggestions.length > 0 && (
           <PopoverContent className="p-0 w-[calc(100%-5rem)] shadow-md" align="start" sideOffset={5}>
             <Command>

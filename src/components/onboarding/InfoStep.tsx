@@ -9,30 +9,30 @@ interface InfoStepProps {
 }
 
 const InfoStep = ({ step }: InfoStepProps) => {
-  // Ensure step object has required properties
   if (!step) {
     return null;
   }
   
   return (
     <>
-      <div className="relative mb-8">
+      <div className="relative mb-12">
         <motion.div 
-          className="bg-cream/50 p-6 rounded-full relative z-10 flex items-center justify-center"
+          className="bg-cream/50 p-6 rounded-full relative z-10 flex items-center justify-center mb-6"
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5 }}
         >
           <ChefHat className="h-12 w-12 text-terracotta" />
         </motion.div>
-        <motion.p 
-          className="absolute -bottom-4 text-center w-full font-medium text-terracotta"
+        <motion.div 
+          className="text-center"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          Taste the Magic
-        </motion.p>
+          <p className="font-medium text-terracotta text-xl">Culinary Magic</p>
+          <p className="text-forest/80 text-sm mt-1">Where Every Ingredient Tells a Story</p>
+        </motion.div>
       </div>
 
       <div className="text-center mb-6">
@@ -45,14 +45,14 @@ const InfoStep = ({ step }: InfoStepProps) => {
       </div>
 
       <motion.div 
-        className="w-full h-64 rounded-lg mb-8 overflow-hidden flex items-center justify-center"
+        className="w-full h-64 rounded-lg mb-8 overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
         <img 
-          src="https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-          alt="Delicious Indian food"
+          src="/lovable-uploads/9206668c-8621-49b8-8f74-ee00efce0300.png"
+          alt="Delicious gourmet dish"
           className="object-cover w-full h-full"
         />
       </motion.div>
