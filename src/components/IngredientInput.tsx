@@ -1,5 +1,5 @@
 
-import React, { useState, KeyboardEvent, useEffect, useRef } from "react";
+import React, { useState, KeyboardEvent, useEffect, useRef, useMemo } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,39 +30,40 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Use useMemo to avoid unnecessary recalculations
+  const updateSuggestions = useMemo(() => {
+    return (input: string, currentIngrs: string[]): string[] => {
+      if (!input || input.trim() === "") return [];
+      
+      // Filter ingredients not already added
+      return commonIngredients
+        .filter(ingredient => 
+          ingredient.toLowerCase().includes(input.toLowerCase()) && 
+          !currentIngrs.includes(ingredient)
+        )
+        .slice(0, 5);
+    };
+  }, []);
+
   useEffect(() => {
-    if (inputValue.trim() === "") {
-      setFilteredSuggestions([]);
-      setIsOpen(false);
-      return;
-    }
-    
     // Create a safe copy of the ingredients array
     const currentIngredients = ingredients || [];
     
-    const filtered = commonIngredients
-      .filter(ingredient => 
-        ingredient.toLowerCase().includes(inputValue.toLowerCase()) && 
-        !currentIngredients.includes(ingredient)
-      )
-      .slice(0, 5);
-    
+    // Update filtered suggestions based on input
+    const filtered = updateSuggestions(inputValue, currentIngredients);
     setFilteredSuggestions(filtered);
     
-    if (filtered.length > 0 && inputValue.trim() !== "") {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
-  }, [inputValue, ingredients]);
+    // Update popover state
+    setIsOpen(filtered.length > 0 && inputValue.trim() !== "");
+  }, [inputValue, ingredients, updateSuggestions]);
 
   const handleAddIngredient = (value: string = inputValue) => {
     const ingredient = value.trim();
     if (ingredient === "") return;
     
     // Safety check for duplicates
-    if (!ingredients.includes(ingredient)) {
-      const newIngredients = [...ingredients, ingredient];
+    if (ingredients && !ingredients.includes(ingredient)) {
+      const newIngredients = [...(ingredients || []), ingredient];
       setIngredients(newIngredients);
       onIngredientsChange(newIngredients);
     }
@@ -75,7 +76,7 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
     if (e.key === "Enter") {
       e.preventDefault();
       handleAddIngredient();
-    } else if (e.key === "Backspace" && inputValue === "" && ingredients.length > 0) {
+    } else if (e.key === "Backspace" && inputValue === "" && ingredients && ingredients.length > 0) {
       const newIngredients = ingredients.slice(0, -1);
       setIngredients(newIngredients);
       onIngredientsChange(newIngredients);
@@ -83,14 +84,14 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
   };
 
   const removeIngredient = (index: number) => {
-    if (index < 0 || index >= ingredients.length) return;
+    if (!ingredients || index < 0 || index >= ingredients.length) return;
     
     const newIngredients = ingredients.filter((_, i) => i !== index);
     setIngredients(newIngredients);
     onIngredientsChange(newIngredients);
   };
 
-  // Ensure we're working with valid arrays
+  // Ensure we have valid arrays
   const validSuggestions = Array.isArray(filteredSuggestions) ? filteredSuggestions : [];
   const validIngredients = Array.isArray(ingredients) ? ingredients : [];
   const showSuggestions = isOpen && validSuggestions.length > 0;

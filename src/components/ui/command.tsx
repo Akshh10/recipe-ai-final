@@ -89,8 +89,22 @@ const CommandGroup = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Group>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
 >(({ className, children, ...props }, ref) => {
-  // Make sure children exists and is not empty before rendering
-  if (!children || (Array.isArray(children) && children.length === 0)) {
+  // Make sure children is defined and not empty
+  const hasChildren = React.useMemo(() => {
+    // Check if children is null or undefined
+    if (children == null) return false;
+    
+    // If children is an array, check if it has items
+    if (Array.isArray(children)) {
+      return children.filter(Boolean).length > 0;
+    }
+    
+    // If children is not null/undefined/empty array, it has content
+    return true;
+  }, [children]);
+  
+  // Only render the group if it has valid children
+  if (!hasChildren) {
     return null;
   }
   
@@ -126,8 +140,9 @@ const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
 >(({ className, ...props }, ref) => {
-  // Add a safeguard for undefined props to prevent issues
+  // Safety check for props and value
   if (!props || !props.value) {
+    console.warn("CommandItem: Missing required 'value' prop");
     return null;
   }
   
