@@ -120,13 +120,13 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
           </div>
         </PopoverTrigger>
         
-        {showSuggestions && (
+        {showSuggestions && validSuggestions.length > 0 && (
           <PopoverContent className="p-0 w-[calc(100%-5rem)] shadow-md" align="start" sideOffset={5}>
             <Command>
               {validSuggestions.length > 0 && (
                 <CommandGroup>
                   {validSuggestions.map((suggestion, index) => {
-                    // Add extra safety check
+                    // Additional safety check
                     if (!suggestion) return null;
                     return (
                       <CommandItem

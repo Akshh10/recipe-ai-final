@@ -60,15 +60,22 @@ CommandInput.displayName = CommandPrimitive.Input.displayName
 const CommandList = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
->(({ className, children, ...props }, ref) => (
-  <CommandPrimitive.List
-    ref={ref}
-    className={cn("max-h-[300px] overflow-y-auto overflow-x-hidden", className)}
-    {...props}
-  >
-    {children || null}
-  </CommandPrimitive.List>
-))
+>(({ className, children, ...props }, ref) => {
+  // Ensure children is not undefined or null
+  const safeChildren = React.useMemo(() => {
+    return children || null;
+  }, [children]);
+  
+  return (
+    <CommandPrimitive.List
+      ref={ref}
+      className={cn("max-h-[300px] overflow-y-auto overflow-x-hidden", className)}
+      {...props}
+    >
+      {safeChildren}
+    </CommandPrimitive.List>
+  )
+})
 
 CommandList.displayName = CommandPrimitive.List.displayName
 
@@ -89,18 +96,24 @@ const CommandGroup = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Group>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
 >(({ className, children, ...props }, ref) => {
-  // Make sure children is defined and not empty
+  // Enhanced check for valid children
   const hasChildren = React.useMemo(() => {
-    // Check if children is null or undefined
-    if (children == null) return false;
-    
-    // If children is an array, check if it has items
-    if (Array.isArray(children)) {
-      return children.filter(Boolean).length > 0;
+    try {
+      // Check if children is null or undefined
+      if (children == null) return false;
+      
+      // If children is an array, check if it has valid items
+      if (Array.isArray(children)) {
+        // Filter out null, undefined, and false values
+        return children.filter(Boolean).length > 0;
+      }
+      
+      // If children is not null/undefined/empty array, it has content
+      return true;
+    } catch (e) {
+      console.error("Error checking children in CommandGroup:", e);
+      return false;
     }
-    
-    // If children is not null/undefined/empty array, it has content
-    return true;
   }, [children]);
   
   // Only render the group if it has valid children
@@ -140,22 +153,27 @@ const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
 >(({ className, ...props }, ref) => {
-  // Safety check for props and value
-  if (!props || !props.value) {
-    console.warn("CommandItem: Missing required 'value' prop");
+  // Enhanced safety check for props and value
+  try {
+    if (!props || typeof props.value === 'undefined' || props.value === null) {
+      console.warn("CommandItem: Missing required 'value' prop");
+      return null;
+    }
+    
+    return (
+      <CommandPrimitive.Item
+        ref={ref}
+        className={cn(
+          "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
+          className
+        )}
+        {...props}
+      />
+    )
+  } catch (e) {
+    console.error("Error in CommandItem:", e);
     return null;
   }
-  
-  return (
-    <CommandPrimitive.Item
-      ref={ref}
-      className={cn(
-        "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
-        className
-      )}
-      {...props}
-    />
-  )
 })
 
 CommandItem.displayName = CommandPrimitive.Item.displayName
