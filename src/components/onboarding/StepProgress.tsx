@@ -8,6 +8,9 @@ interface StepProgressProps {
 }
 
 const StepProgress = ({ steps, currentStep }: StepProgressProps) => {
+  // Make sure steps is defined and is a positive number
+  const stepsCount = typeof steps === 'number' && steps > 0 ? steps : 1;
+  
   return (
     <motion.div 
       className="flex gap-2 mb-8 justify-center"
@@ -15,7 +18,7 @@ const StepProgress = ({ steps, currentStep }: StepProgressProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
     >
-      {Array.from({ length: steps }).map((_, index) => (
+      {Array.from({ length: stepsCount }).map((_, index) => (
         <motion.div
           key={index}
           className={`h-1.5 rounded-full ${

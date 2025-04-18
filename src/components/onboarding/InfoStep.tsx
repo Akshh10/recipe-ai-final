@@ -9,6 +9,11 @@ interface InfoStepProps {
 }
 
 const InfoStep = ({ step }: InfoStepProps) => {
+  // Ensure step object has required properties
+  if (!step) {
+    return null;
+  }
+  
   return (
     <>
       <div className="relative mb-8">
