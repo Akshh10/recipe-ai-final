@@ -33,13 +33,17 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
   useEffect(() => {
     if (inputValue.trim() === "") {
       setFilteredSuggestions([]);
+      setIsOpen(false);
       return;
     }
+    
+    // Create a safe copy of the ingredients array
+    const currentIngredients = ingredients || [];
     
     const filtered = commonIngredients
       .filter(ingredient => 
         ingredient.toLowerCase().includes(inputValue.toLowerCase()) && 
-        !ingredients.includes(ingredient)
+        !currentIngredients.includes(ingredient)
       )
       .slice(0, 5);
     
@@ -54,13 +58,17 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
 
   const handleAddIngredient = (value: string = inputValue) => {
     const ingredient = value.trim();
-    if (ingredient !== "" && !ingredients.includes(ingredient)) {
+    if (ingredient === "") return;
+    
+    // Safety check for duplicates
+    if (!ingredients.includes(ingredient)) {
       const newIngredients = [...ingredients, ingredient];
       setIngredients(newIngredients);
       onIngredientsChange(newIngredients);
-      setInputValue("");
-      setIsOpen(false);
     }
+    
+    setInputValue("");
+    setIsOpen(false);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -75,13 +83,16 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
   };
 
   const removeIngredient = (index: number) => {
+    if (index < 0 || index >= ingredients.length) return;
+    
     const newIngredients = ingredients.filter((_, i) => i !== index);
     setIngredients(newIngredients);
     onIngredientsChange(newIngredients);
   };
 
-  // Make sure we have a valid array of suggestions
+  // Ensure we're working with valid arrays
   const validSuggestions = Array.isArray(filteredSuggestions) ? filteredSuggestions : [];
+  const validIngredients = Array.isArray(ingredients) ? ingredients : [];
   const showSuggestions = isOpen && validSuggestions.length > 0;
 
   return (
@@ -113,19 +124,23 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
             <Command>
               {validSuggestions.length > 0 && (
                 <CommandGroup>
-                  {validSuggestions.map((suggestion, index) => (
-                    <CommandItem
-                      key={`suggestion-${index}`}
-                      value={suggestion}
-                      onSelect={() => {
-                        handleAddIngredient(suggestion);
-                        setInputValue("");
-                      }}
-                      className="cursor-pointer hover:bg-cream/50"
-                    >
-                      {suggestion}
-                    </CommandItem>
-                  ))}
+                  {validSuggestions.map((suggestion, index) => {
+                    // Add extra safety check
+                    if (!suggestion) return null;
+                    return (
+                      <CommandItem
+                        key={`suggestion-${index}-${suggestion}`}
+                        value={suggestion}
+                        onSelect={() => {
+                          handleAddIngredient(suggestion);
+                          setInputValue("");
+                        }}
+                        className="cursor-pointer hover:bg-cream/50"
+                      >
+                        {suggestion}
+                      </CommandItem>
+                    );
+                  })}
                 </CommandGroup>
               )}
             </Command>
@@ -134,33 +149,37 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
       </Popover>
 
       <AnimatePresence>
-        {ingredients.length > 0 && (
+        {validIngredients.length > 0 && (
           <motion.div 
             className="mt-4 flex flex-wrap gap-2"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {ingredients.map((ingredient, index) => (
-              <motion.div
-                key={`ingredient-${index}`}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-                className="ingredient-tag flex items-center gap-1 bg-cream px-3 py-1 rounded-full text-forest"
-                layout
-              >
-                <span>{ingredient}</span>
-                <button
-                  onClick={() => removeIngredient(index)}
-                  className="text-forest hover:text-terracotta transition-colors ml-1"
-                  aria-label={`Remove ${ingredient}`}
+            {validIngredients.map((ingredient, index) => {
+              // Safety check
+              if (!ingredient) return null;
+              return (
+                <motion.div
+                  key={`ingredient-${index}-${ingredient}`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
+                  className="ingredient-tag flex items-center gap-1 bg-cream px-3 py-1 rounded-full text-forest"
+                  layout
                 >
-                  <X className="h-4 w-4" />
-                </button>
-              </motion.div>
-            ))}
+                  <span>{ingredient}</span>
+                  <button
+                    onClick={() => removeIngredient(index)}
+                    className="text-forest hover:text-terracotta transition-colors ml-1"
+                    aria-label={`Remove ${ingredient}`}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </motion.div>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
