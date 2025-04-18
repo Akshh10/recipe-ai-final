@@ -5,10 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
   
   // In a real app, this would come from an auth context
   const user = {
@@ -42,10 +53,13 @@ const Profile = () => {
   ];
   
   const handleLogout = () => {
+    setShowLogoutConfirm(false);
+    
     toast({
       title: "Logged out",
       description: "You have been successfully logged out",
     });
+    
     // In a real app, this would clear auth tokens and redirect
     setTimeout(() => {
       navigate("/");
@@ -110,7 +124,7 @@ const Profile = () => {
           <Button 
             variant="outline" 
             className="w-full border-forest/20 text-forest/70 mb-4"
-            onClick={handleLogout}
+            onClick={() => setShowLogoutConfirm(true)}
           >
             <LogOut className="h-4 w-4 mr-2" />
             Log Out
@@ -121,6 +135,23 @@ const Profile = () => {
           </p>
         </div>
       </section>
+      
+      <AlertDialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Log out</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to log out of your account?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout} className="bg-terracotta hover:bg-terracotta/90">
+              Log Out
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

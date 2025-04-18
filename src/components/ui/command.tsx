@@ -138,8 +138,10 @@ const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
 >(({ className, value, ...props }, ref) => {
-  // Additional safety check for value prop
-  if (value === undefined || value === null || value === '') {
+  // Safely handle value prop
+  const safeValue = value || '';
+  
+  if (!safeValue && safeValue !== '') {
     console.warn("CommandItem: Missing or invalid 'value' prop");
     return null;
   }
@@ -151,7 +153,7 @@ const CommandItem = React.forwardRef<
         "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
         className
       )}
-      value={value}
+      value={safeValue}
       {...props}
     />
   )

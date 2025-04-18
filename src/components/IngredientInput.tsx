@@ -1,5 +1,5 @@
 
-import React, { useState, KeyboardEvent, useEffect, useRef, useMemo } from "react";
+import React, { useState, KeyboardEvent, useEffect, useRef } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,31 +30,30 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   
-  // Filter suggestions based on input
-  const updateSuggestions = useMemo(() => {
-    return (input: string, currentIngredients: string[]): string[] => {
-      if (!input || input.trim() === "") return [];
+  // Filter suggestions based on input - memoized to avoid unnecessary recalculations
+  useEffect(() => {
+    const updateSuggestions = () => {
+      if (!inputValue || inputValue.trim() === "") {
+        setFilteredSuggestions([]);
+        setIsOpen(false);
+        return;
+      }
       
-      return commonIngredients
+      const currentIngredients = Array.isArray(ingredients) ? ingredients : [];
+      
+      const filtered = commonIngredients
         .filter(ingredient => 
-          ingredient.toLowerCase().includes(input.toLowerCase()) && 
+          ingredient.toLowerCase().includes(inputValue.toLowerCase()) && 
           !currentIngredients.includes(ingredient)
         )
         .slice(0, 5);
+      
+      setFilteredSuggestions(filtered);
+      setIsOpen(filtered.length > 0);
     };
-  }, []);
-  
-  useEffect(() => {
-    // Safely handle ingredients array
-    const currentIngredients = Array.isArray(ingredients) ? ingredients : [];
     
-    // Update filtered suggestions based on input
-    const filtered = updateSuggestions(inputValue, currentIngredients);
-    setFilteredSuggestions(filtered);
-    
-    // Only show popover when we have suggestions
-    setIsOpen(filtered.length > 0 && inputValue.trim() !== "");
-  }, [inputValue, ingredients, updateSuggestions]);
+    updateSuggestions();
+  }, [inputValue, ingredients]);
   
   const handleAddIngredient = (value: string = inputValue) => {
     const ingredient = value.trim();
@@ -96,14 +95,12 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
     onIngredientsChange(newIngredients);
   };
   
-  // Ensure we have valid arrays
-  const validSuggestions = Array.isArray(filteredSuggestions) ? filteredSuggestions : [];
+  // Safely handle arrays
   const validIngredients = Array.isArray(ingredients) ? ingredients : [];
-  const showSuggestions = isOpen && validSuggestions.length > 0;
   
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <Popover open={showSuggestions} onOpenChange={setIsOpen}>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div className="flex gap-2">
             <Input
@@ -125,17 +122,16 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
           </div>
         </PopoverTrigger>
         
-        {showSuggestions && (
+        {isOpen && filteredSuggestions && filteredSuggestions.length > 0 && (
           <PopoverContent className="p-0 w-[calc(100%-5rem)] shadow-md" align="start" sideOffset={5}>
             <Command>
               <CommandGroup>
-                {validSuggestions.map((suggestion, index) => (
+                {filteredSuggestions.map((suggestion, index) => (
                   <CommandItem
                     key={`suggestion-${index}-${suggestion}`}
-                    value={suggestion || ''}
+                    value={suggestion}
                     onSelect={(currentValue) => {
                       handleAddIngredient(currentValue);
-                      setInputValue("");
                     }}
                     className="cursor-pointer hover:bg-cream/50"
                   >

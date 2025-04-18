@@ -11,14 +11,37 @@ interface ReadyStepProps {
 }
 
 const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
-  // Safety check to ensure step and plans are valid
-  if (!step || !step.plans || !Array.isArray(step.plans) || step.plans.length === 0) {
-    return (
-      <div className="text-center p-4">
-        <p>Loading subscription plans...</p>
-      </div>
-    );
-  }
+  // Updated pricing data
+  const plans = [
+    {
+      name: "Free",
+      price: "$0",
+      interval: "forever",
+      features: ["Basic recipe search", "1 meal option per ingredient", "Save up to 3 favorites"],
+    },
+    {
+      name: "Weekly",
+      price: "$1.69",
+      interval: "week",
+      recommended: true,
+      discount: "20% off",
+      features: ["Unlimited recipe search", "Unlimited favorites", "Detailed nutritional info", "Weekly meal planner"],
+    },
+    {
+      name: "Quarterly",
+      price: "$6.69",
+      interval: "3 months",
+      discount: "30% off",
+      features: ["All Weekly plan features", "Ingredient substitutions", "No ads"],
+    },
+    {
+      name: "Annual",
+      price: "$19.99",
+      interval: "year",
+      discount: "40% off",
+      features: ["All Quarterly features", "Priority customer support", "Early access to new features"],
+    }
+  ];
 
   return (
     <>
@@ -33,8 +56,7 @@ const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
 
       <ScrollArea className="w-full h-[400px] pr-4">
         <div className="w-full mb-6 space-y-3">
-          {/* Plan options with safety checks */}
-          {step.plans.map((plan, index) => (
+          {plans.map((plan, index) => (
             <motion.div 
               key={plan.name || `plan-${index}`}
               className={`w-full p-4 rounded-lg border relative ${
@@ -72,7 +94,7 @@ const ReadyStep = ({ step, selectedPlan, onPlanSelect }: ReadyStepProps) => {
                   </div>
                 </div>
               </div>
-              {plan.features && Array.isArray(plan.features) && plan.features.length > 0 && (
+              {plan.features && plan.features.length > 0 && (
                 <div className="mt-3 pl-7">
                   <ul className="text-sm">
                     {plan.features.map((feature, featureIdx) => (

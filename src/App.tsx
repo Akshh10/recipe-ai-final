@@ -99,7 +99,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
 const ConditionalHeader = () => {
   const location = useLocation();
   // Only show header on certain pages
-  const showHeader = ['/', '/favorites', '/profile'].includes(location.pathname);
+  const showHeader = ['/', '/favorites'].includes(location.pathname);
   
   return showHeader ? <Header /> : null;
 };
@@ -130,7 +130,7 @@ const App = () => {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(true);
   const [showTransition, setShowTransition] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
-  const [authType, setAuthType] = useState<"login" | "signup">("signup");
+  const [authType, setAuthType] = useState<"login" | "signup" | "phone" | "google">("signup");
   
   // We'll force onboarding to show by removing the localStorage check
   useEffect(() => {
@@ -148,7 +148,7 @@ const App = () => {
     setShowTransition(false);
   };
   
-  const handleShowAuth = (type: "login" | "signup") => {
+  const handleShowAuth = (type: "login" | "signup" | "phone" | "google") => {
     setAuthType(type);
     setShowAuthModal(true);
   };

@@ -53,13 +53,13 @@ const onboardingSteps: OnboardingStep[] = [
     plans: [
       {
         name: "Free",
-        price: "₹0",
+        price: "$0",
         interval: "forever",
         features: ["Basic recipe search", "1 meal option per ingredient", "Save up to 3 favorites"]
       },
       {
         name: "Weekly",
-        price: "₹169",
+        price: "$1.69",
         interval: "week",
         recommended: true,
         discount: "20% off",
@@ -67,14 +67,14 @@ const onboardingSteps: OnboardingStep[] = [
       },
       {
         name: "Quarterly",
-        price: "₹449",
+        price: "$6.69",
         interval: "3 months",
         discount: "30% off",
         features: ["All Weekly plan features", "Ingredient substitutions", "No ads"]
       },
       {
         name: "Annual",
-        price: "₹1299",
+        price: "$19.99",
         interval: "year",
         discount: "40% off",
         features: ["All Quarterly features", "Priority customer support", "Early access to new features"]
@@ -85,7 +85,7 @@ const onboardingSteps: OnboardingStep[] = [
 
 interface OnboardingProps {
   onComplete: () => void;
-  onShowAuth: (type: "login" | "signup") => void;
+  onShowAuth: (type: "login" | "signup" | "phone" | "google") => void;
 }
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onShowAuth }) => {

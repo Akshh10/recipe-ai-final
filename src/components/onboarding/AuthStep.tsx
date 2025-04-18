@@ -7,7 +7,7 @@ import { OnboardingStep } from '@/types/onboarding';
 
 interface AuthStepProps {
   step: OnboardingStep;
-  onShowAuth: (type: "login" | "signup") => void;
+  onShowAuth: (type: "login" | "signup" | "phone" | "google") => void;
 }
 
 const AuthStep = ({ step, onShowAuth }: AuthStepProps) => {
@@ -76,7 +76,7 @@ const AuthStep = ({ step, onShowAuth }: AuthStepProps) => {
           <Button
             variant="outline"
             className="flex items-center justify-center gap-2"
-            onClick={() => onShowAuth("signup")}
+            onClick={() => onShowAuth("phone")}
           >
             <Phone className="h-4 w-4" />
             <span>Phone</span>
@@ -85,7 +85,7 @@ const AuthStep = ({ step, onShowAuth }: AuthStepProps) => {
           <Button
             variant="outline"
             className="flex items-center justify-center gap-2"
-            onClick={() => onShowAuth("signup")}
+            onClick={() => onShowAuth("google")}
           >
             <Globe className="h-4 w-4" />
             <span>Google</span>

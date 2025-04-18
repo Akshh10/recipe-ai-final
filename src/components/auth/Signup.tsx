@@ -8,9 +8,11 @@ import { Mail, User, Lock, Globe, Phone } from 'lucide-react';
 interface SignupProps {
   onToggleView: () => void;
   onSuccess: () => void;
+  onPhoneAuth: () => void;
+  onGoogleAuth: () => void;
 }
 
-const Signup = ({ onToggleView, onSuccess }: SignupProps) => {
+const Signup = ({ onToggleView, onSuccess, onPhoneAuth, onGoogleAuth }: SignupProps) => {
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -80,11 +82,19 @@ const Signup = ({ onToggleView, onSuccess }: SignupProps) => {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Button variant="outline" className="flex items-center justify-center gap-2">
+        <Button 
+          variant="outline" 
+          className="flex items-center justify-center gap-2"
+          onClick={onPhoneAuth}
+        >
           <Phone className="h-4 w-4" />
           <span>Phone</span>
         </Button>
-        <Button variant="outline" className="flex items-center justify-center gap-2">
+        <Button 
+          variant="outline" 
+          className="flex items-center justify-center gap-2"
+          onClick={onGoogleAuth}
+        >
           <Globe className="h-4 w-4" />
           <span>Google</span>
         </Button>
