@@ -47,13 +47,13 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
 
   useEffect(() => {
     // Create a safe copy of the ingredients array
-    const currentIngredients = ingredients || [];
+    const currentIngredients = [...(ingredients || [])];
     
     // Update filtered suggestions based on input
     const filtered = updateSuggestions(inputValue, currentIngredients);
     setFilteredSuggestions(filtered);
     
-    // Update popover state
+    // Update popover state - only show when we have suggestions
     setIsOpen(filtered.length > 0 && inputValue.trim() !== "");
   }, [inputValue, ingredients, updateSuggestions]);
 
@@ -62,7 +62,7 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
     if (ingredient === "") return;
     
     // Safety check for duplicates
-    if (ingredients && !ingredients.includes(ingredient)) {
+    if (!ingredients?.includes(ingredient)) {
       const newIngredients = [...(ingredients || []), ingredient];
       setIngredients(newIngredients);
       onIngredientsChange(newIngredients);
@@ -120,30 +120,27 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
           </div>
         </PopoverTrigger>
         
-        {showSuggestions && validSuggestions.length > 0 && (
+        {showSuggestions && (
           <PopoverContent className="p-0 w-[calc(100%-5rem)] shadow-md" align="start" sideOffset={5}>
             <Command>
-              {validSuggestions.length > 0 && (
-                <CommandGroup>
-                  {validSuggestions.map((suggestion, index) => {
-                    // Additional safety check
-                    if (!suggestion) return null;
-                    return (
-                      <CommandItem
-                        key={`suggestion-${index}-${suggestion}`}
-                        value={suggestion}
-                        onSelect={() => {
-                          handleAddIngredient(suggestion);
-                          setInputValue("");
-                        }}
-                        className="cursor-pointer hover:bg-cream/50"
-                      >
-                        {suggestion}
-                      </CommandItem>
-                    );
-                  })}
-                </CommandGroup>
-              )}
+              <CommandGroup>
+                {validSuggestions.map((suggestion, index) => {
+                  if (!suggestion) return null;
+                  return (
+                    <CommandItem
+                      key={`suggestion-${index}-${suggestion}`}
+                      value={suggestion}
+                      onSelect={() => {
+                        handleAddIngredient(suggestion);
+                        setInputValue("");
+                      }}
+                      className="cursor-pointer hover:bg-cream/50"
+                    >
+                      {suggestion}
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
             </Command>
           </PopoverContent>
         )}
@@ -158,7 +155,6 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
             transition={{ duration: 0.3 }}
           >
             {validIngredients.map((ingredient, index) => {
-              // Safety check
               if (!ingredient) return null;
               return (
                 <motion.div

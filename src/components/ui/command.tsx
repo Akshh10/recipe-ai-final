@@ -98,22 +98,17 @@ const CommandGroup = React.forwardRef<
 >(({ className, children, ...props }, ref) => {
   // Enhanced check for valid children
   const hasChildren = React.useMemo(() => {
-    try {
-      // Check if children is null or undefined
-      if (children == null) return false;
-      
-      // If children is an array, check if it has valid items
-      if (Array.isArray(children)) {
-        // Filter out null, undefined, and false values
-        return children.filter(Boolean).length > 0;
-      }
-      
-      // If children is not null/undefined/empty array, it has content
-      return true;
-    } catch (e) {
-      console.error("Error checking children in CommandGroup:", e);
+    if (children === null || children === undefined) {
       return false;
     }
+    
+    // Check if there are any valid children when in array form
+    if (Array.isArray(children)) {
+      const validChildren = React.Children.toArray(children).filter(Boolean);
+      return validChildren.length > 0;
+    }
+    
+    return true;
   }, [children]);
   
   // Only render the group if it has valid children
@@ -153,27 +148,22 @@ const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
 >(({ className, ...props }, ref) => {
-  // Enhanced safety check for props and value
-  try {
-    if (!props || typeof props.value === 'undefined' || props.value === null) {
-      console.warn("CommandItem: Missing required 'value' prop");
-      return null;
-    }
-    
-    return (
-      <CommandPrimitive.Item
-        ref={ref}
-        className={cn(
-          "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
-          className
-        )}
-        {...props}
-      />
-    )
-  } catch (e) {
-    console.error("Error in CommandItem:", e);
+  // Safety check for missing value prop
+  if (!props || typeof props.value !== 'string' || props.value === '') {
+    console.warn("CommandItem: Missing or invalid 'value' prop");
     return null;
   }
+  
+  return (
+    <CommandPrimitive.Item
+      ref={ref}
+      className={cn(
+        "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
+        className
+      )}
+      {...props}
+    />
+  )
 })
 
 CommandItem.displayName = CommandPrimitive.Item.displayName

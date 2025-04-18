@@ -109,22 +109,16 @@ const AppRoutes = () => {
 };
 
 const App = () => {
-  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  // Force showing onboarding for demonstration
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(true);
   const [showTransition, setShowTransition] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [authType, setAuthType] = useState<"login" | "signup">("signup");
   
+  // We'll force onboarding to show by removing the localStorage check
   useEffect(() => {
-    // Check if onboarding has been completed before
-    const hasCompletedOnboarding = localStorage.getItem("onboardingComplete");
-    
-    // Only show onboarding if it hasn't been completed
-    if (!hasCompletedOnboarding) {
-      setShowOnboarding(true);
-    }
-    
-    // Remove this comment if you want to test onboarding every time:
-    // localStorage.removeItem("onboardingComplete");
+    // Remove any existing onboarding completion flag
+    localStorage.removeItem("onboardingComplete");
   }, []);
   
   const handleOnboardingComplete = () => {
