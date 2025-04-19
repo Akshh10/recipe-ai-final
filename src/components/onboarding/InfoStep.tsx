@@ -3,7 +3,6 @@ import React from 'react';
 import { ChefHat } from 'lucide-react';
 import { OnboardingStep } from '@/types/onboarding';
 import { motion } from 'framer-motion';
-import { TextShimmerWave } from '../ui/text-shimmer-wave';
 
 interface InfoStepProps {
   step: OnboardingStep;
@@ -26,12 +25,9 @@ const InfoStep = ({ step }: InfoStepProps) => {
       </div>
 
       <div className="text-center mb-6">
-        <TextShimmerWave 
-          as="h2" 
-          className="text-4xl font-heading font-extrabold mb-4"
-        >
-          Recipe AI
-        </TextShimmerWave>
+        <h2 className="text-4xl font-heading font-extrabold mb-4">
+          Welcome to <span className="text-terracotta">Recipe AI</span>
+        </h2>
         <p className="text-forest/80">
           {step.description}
         </p>
@@ -54,3 +50,4 @@ const InfoStep = ({ step }: InfoStepProps) => {
 };
 
 export default InfoStep;
+
