@@ -25,11 +25,11 @@ const InfoStep = ({ step }: InfoStepProps) => {
       </div>
 
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-heading font-bold text-forest mb-4">
-          {step.title || 'Welcome'}
+        <h2 className="text-3xl font-heading font-extrabold bg-gradient-to-r from-terracotta to-forest bg-clip-text text-transparent mb-4">
+          Recipe AI
         </h2>
         <p className="text-forest/80">
-          {step.description || 'Getting started with cooking made easy'}
+          {step.description}
         </p>
       </div>
 

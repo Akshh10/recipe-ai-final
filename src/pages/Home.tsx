@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -162,18 +163,18 @@ const Home = () => {
       >
         <motion.div className="mb-6" variants={item}>
           <h2 className="text-2xl font-semibold font-heading mb-1 text-forest">
-            {hasSearched ? 'Found Recipes' : 'Popular Recipes'}
+            {hasSearched ? 'Found Recipes' : 'Discover New Recipes'}
           </h2>
           <p className="text-sm text-forest/70">
             {hasSearched ? 
               'Recipes that match your ingredients' : 
-              'Trending recipes that our community loves'
+              'Explore our collection of delicious recipes'
             }
           </p>
         </motion.div>
         
         <div className="grid gap-4">
-          {(hasSearched ? recipes : findRecipesByIngredients(['paneer', 'rice', 'potato']).slice(0, 4)).map((recipe) => (
+          {(hasSearched ? recipes : []).map((recipe) => (
             <RecipeCard
               key={recipe.id}
               id={recipe.id}
