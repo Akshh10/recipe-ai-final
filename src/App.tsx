@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -11,7 +10,6 @@ import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./components/Onboarding";
-import TransitionScreen from "./components/TransitionScreen";
 import Header from "./components/Header";
 import { LikedRecipesProvider } from "./components/LikedRecipesContext";
 import { Home as HomeIcon, Scan, BookOpen } from "lucide-react";
@@ -128,7 +126,6 @@ const AppRoutes = () => {
 const App = () => {
   // Force showing onboarding for demonstration
   const [showOnboarding, setShowOnboarding] = useState<boolean>(true);
-  const [showTransition, setShowTransition] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [authType, setAuthType] = useState<"login" | "signup" | "phone" | "google">("signup");
   
@@ -141,11 +138,6 @@ const App = () => {
   const handleOnboardingComplete = () => {
     localStorage.setItem("onboardingComplete", "true");
     setShowOnboarding(false);
-    setShowTransition(true);
-  };
-  
-  const handleTransitionComplete = () => {
-    setShowTransition(false);
   };
   
   const handleShowAuth = (type: "login" | "signup" | "phone" | "google") => {
@@ -165,7 +157,6 @@ const App = () => {
               onShowAuth={handleShowAuth}
             />
           )}
-          {showTransition && <TransitionScreen onComplete={handleTransitionComplete} />}
           {showAuthModal && (
             <AuthModal 
               isOpen={showAuthModal}

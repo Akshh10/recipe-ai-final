@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +31,12 @@ const Home = () => {
     }
 
     setLoading(true);
+    toast({
+      title: "Finding recipes",
+      description: "Creating your perfect dish with your ingredients...",
+      className: "bg-terracotta text-white",
+    });
+    
     // Simulate API call
     setTimeout(() => {
       const results = findRecipesByIngredients(ingredients);
@@ -43,6 +48,12 @@ const Home = () => {
         toast({
           title: "No recipes found",
           description: "Try adding different ingredients or fewer restrictions.",
+        });
+      } else {
+        toast({
+          title: "Recipes found!",
+          description: `Found ${results.length} recipes matching your ingredients.`,
+          className: "bg-forest text-white",
         });
       }
     }, 1500);
