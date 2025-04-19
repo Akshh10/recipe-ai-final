@@ -31,14 +31,14 @@ export function TextShimmerWave({
   rotateYDistance = 10,
   transition,
 }: TextShimmerWave) {
-  const MotionComponent = motion(Component as keyof JSX.IntrinsicElements);
+  const MotionComponent = motion[Component as keyof typeof motion];
 
   return (
     <MotionComponent
       className={cn(
         'relative inline-block [perspective:500px]',
-        '[--base-color:#a1a1aa] [--base-gradient-color:#000]',
-        'dark:[--base-color:#71717a] dark:[--base-gradient-color:#ffffff]',
+        '[--base-color:#f97316] [--base-gradient-color:#d946ef]', // Updated colors
+        'dark:[--base-color:#f97316] dark:[--base-gradient-color:#8b5cf6]', // Dark mode colors
         className
       )}
       style={{ color: 'var(--base-color)' }}
