@@ -1,9 +1,10 @@
-
 import React, { useState, KeyboardEvent } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import Tesseract from 'tesseract.js';
+
 
 interface IngredientInputProps {
   onIngredientsChange: (ingredients: string[]) => void;
@@ -12,6 +13,7 @@ interface IngredientInputProps {
 const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }) => {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
+ 
   
   const handleAddIngredient = () => {
     const ingredient = inputValue.trim();
@@ -49,8 +51,36 @@ const IngredientInput: React.FC<IngredientInputProps> = ({ onIngredientsChange }
     onIngredientsChange(newIngredients);
   };
 
+  const handleScan = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUrl = reader.result as string;
+      try {
+        const result = await Tesseract.recognize(dataUrl, 'eng');
+        const detectedText = result.data.text;
+  
+        const detectedIngredients = detectedText
+          .split(/[\n,;]+/)
+          .map(ing => ing.trim())
+          .filter(ing => ing.length > 0);
+  
+        const newIngredients = [...new Set([...ingredients, ...detectedIngredients])];
+        setIngredients(newIngredients);
+        onIngredientsChange(newIngredients);
+      } catch (error) {
+        console.error('OCR Error:', error);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  
+
   return (
-    <div className="w-full max-w-3xl mx-auto">
+    <div className="w-full max-w-3xl mx-auto space-y-4">
       <div className="flex gap-2">
         <Input
           type="text"

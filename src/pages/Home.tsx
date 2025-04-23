@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import IngredientInput from "@/components/IngredientInput";
@@ -8,6 +7,10 @@ import RecipeDetailModal from "@/components/RecipeDetailModal";
 import { findRecipesByIngredients, Recipe } from "@/utils/mockData";
 import { Sparkles, ChefHat } from "lucide-react";
 import { motion } from "framer-motion";
+import { useScan } from "@/context/ScanContext" ;
+import { supabase } from "@/lib/supabaseClient";
+
+
 
 const Home = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -18,6 +21,9 @@ const Home = () => {
   const [matchedIngredients, setMatchedIngredients] = useState<string[]>([]);
   const [missingIngredients, setMissingIngredients] = useState<string[]>([]);
   const [waitlistModalOpen, setWaitlistModalOpen] = useState(false);
+  const [inputValue, setInputValue] = useState<string>('');
+  
+
   
   const { toast } = useToast();
 
@@ -59,6 +65,35 @@ const Home = () => {
       }
     }, 1500);
   };
+  const { scannedIngredients } = useScan()
+  
+  const fetchRecipes = async (ingredients: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('recipes')
+        .select('*')
+        .ilike('ingredients', `%${ingredients}%`);
+  
+      if (error) {
+        console.error('Error fetching recipes:', error);
+      } else {
+        console.log('Fetched Recipes:', data);
+        setRecipes(data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+    }
+  };
+
+// Add useEffect
+useEffect(() => {
+  if (scannedIngredients.length > 0) {
+    const ingredientsString = scannedIngredients.join(', ');
+    setInputValue(ingredientsString);
+    fetchRecipes(ingredientsString);  // your search function
+  }
+}, [scannedIngredients]);
+
 
   const handleRecipeClick = (recipe: Recipe, matched: string[], missing: string[]) => {
     setSelectedRecipe(recipe);
@@ -103,6 +138,7 @@ const Home = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        
         <div className="max-w-lg mx-auto space-y-4 text-center">
           <motion.div 
             className="space-y-2"
@@ -161,17 +197,8 @@ const Home = () => {
         initial="hidden"
         animate="show"
       >
-        <motion.div className="mb-6" variants={item}>
-          <h2 className="text-2xl font-semibold font-heading mb-1 text-forest">
-            {hasSearched ? 'Found Recipes' : 'Discover New Recipes'}
-          </h2>
-          <p className="text-sm text-forest/70">
-            {hasSearched ? 
-              'Recipes that match your ingredients' : 
-              'Explore our collection of delicious recipes'
-            }
-          </p>
-        </motion.div>
+          
+
         
         <div className="grid gap-4">
           {(hasSearched ? recipes : []).map((recipe) => (
@@ -212,5 +239,6 @@ const Home = () => {
     </motion.div>
   );
 };
+
 
 export default Home;

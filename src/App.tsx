@@ -19,12 +19,15 @@ import AccountSettings from "./pages/AccountSettings";
 import HelpSupport from "./pages/HelpSupport";
 import Subscription from "./pages/Subscription";
 import SavedRecipes from "./pages/SavedRecipes";
+import ScanPage from "./pages/Scan";
+import { ScanProvider } from './context/ScanContext';
+
 
 const queryClient = new QueryClient();
 
 // Mobile app navigation component
 const MobileNav = () => {
-  const location = useLocation();
+ 
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -54,12 +57,13 @@ const MobileNav = () => {
           </button>
         </motion.li>
         <motion.li className="relative" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-          <button 
-            className="flex flex-col items-center justify-center bg-terracotta text-white rounded-full p-4 -mt-8 shadow-md hover:bg-terracotta/90 transition-colors hover:shadow-xl transform transition-transform hover:scale-105"
-            onClick={handleScanClick}
-          >
-            <Scan className="h-6 w-6" />
-          </button>
+        <button
+  className="flex flex-col items-center justify-center bg-terracotta text-white rounded-full p-4"
+  onClick={() => navigate('/scan')}
+>
+  <Scan className="h-6 w-6" />
+</button>
+
         </motion.li>
         <motion.li whileTap={{ scale: 0.9 }}>
           <button 
@@ -102,7 +106,21 @@ const ConditionalHeader = () => {
   return showHeader ? <Header /> : null;
 };
 
+// Put this in the same App.tsx above AppRoutes
+
+const ConditionalMobileNav = () => {
+  const location = useLocation();
+  const hideOnPaths = ['/scan']; // ✅ Add other routes too if needed later
+  if (hideOnPaths.includes(location.pathname)) {
+    return null; // ❌ No mobile nav on scan page
+  }
+  return <MobileNav />; // ✅ Show nav normally
+};
+
+
 const AppRoutes = () => {
+  const location = useLocation();
+  
   return (
     <>
       <ConditionalHeader />
@@ -115,13 +133,17 @@ const AppRoutes = () => {
           <Route path="/help-support" element={<HelpSupport />} />
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/saved-recipes" element={<SavedRecipes />} />
+          <Route path="/scan" element={<ScanPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
-      <MobileNav />
+
+      {/* ✅ Use ConditionalMobileNav here */}
+      <ConditionalMobileNav />
     </>
   );
 };
+
 
 const App = () => {
   // Force showing onboarding for demonstration
@@ -144,9 +166,10 @@ const App = () => {
     setAuthType(type);
     setShowAuthModal(true);
   };
-  
+
   return (
-    <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={queryClient}>
+    <ScanProvider> {/* ✅ Wrap the app with this */}
       <LikedRecipesProvider>
         <TooltipProvider>
           <Toaster />
@@ -169,8 +192,12 @@ const App = () => {
           </BrowserRouter>
         </TooltipProvider>
       </LikedRecipesProvider>
-    </QueryClientProvider>
-  );
+    </ScanProvider>
+  </QueryClientProvider>
+);
+
 };
+
+
 
 export default App;

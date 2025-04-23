@@ -109,18 +109,13 @@ const HelpSupport = () => {
               
               <div className="flex items-center gap-2 text-sm">
                 <Phone className="h-4 w-4 text-terracotta" />
-                <span>+1 (555) 123-4567</span>
+                <span>+91 62395-31889</span>
               </div>
               
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="h-4 w-4 text-terracotta" />
                 <span>support@recipeai.example</span>
-              </div>
-              
-              <Button variant="outline" className="w-full mt-2 flex items-center gap-2">
-                <ExternalLink className="h-4 w-4" />
-                Visit Help Center
-              </Button>
+              </div>  
             </div>
           </section>
         </div>

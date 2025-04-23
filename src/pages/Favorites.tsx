@@ -1,17 +1,30 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLikedRecipes } from "@/components/LikedRecipesContext";
 import RecipeCard from "@/components/RecipeCard";
 import RecipeDetailModal from "@/components/RecipeDetailModal";
-import { Recipe, mockRecipes } from "@/utils/mockData";
+import { Recipe } from "@/utils/mockData";
+import { supabase } from '../lib/supabaseClient';
 
 const Favorites = () => {
   const { likedRecipes } = useLikedRecipes();
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [matchedIngredients, setMatchedIngredients] = useState<string[]>([]);
   const [missingIngredients, setMissingIngredients] = useState<string[]>([]);
   
-  const likedRecipesData = mockRecipes.filter(recipe => 
+  useEffect(() => {
+    async function fetchRecipes() {
+      const { data, error } = await supabase.from('recipes').select('*');
+      if (error) {
+        console.error(error);
+      } else {
+        setRecipes(data);
+      }
+    }
+    fetchRecipes();
+  }, []);
+
+  const likedRecipesData = recipes.filter(recipe => 
     likedRecipes.includes(recipe.id)
   );
 
